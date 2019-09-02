@@ -1,8 +1,11 @@
 
-# springboot中实现logback收集日志输出到kafka
+# springboot整合logback收集日志到kafka
 
-异常容错机制,如果kafka服务宕机,输出到本地文件,可用其他方式重新加载local中的数据记录;
-效率比对下:也可以尝试直接用kafka客户端写入到kafka中,手动针对异常做容错(如,写入文件)
+异常容错机制
+> 如果kafka服务宕机,输出到本地文件,可用其他方式重新load数据记录;
+
+> 也可直接用kafka客户端写入到kafka中,手动针对异常做容错(如,写入文件)
+
 - **1.pom依赖**
 - **2.logback.xml配置**
 - **3.自定义KafkaAppender**

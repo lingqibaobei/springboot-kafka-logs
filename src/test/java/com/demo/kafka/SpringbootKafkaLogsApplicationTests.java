@@ -18,7 +18,7 @@ public class SpringbootKafkaLogsApplicationTests {
 	@Test
 	public void testSendMessage() throws InterruptedException {
 
-		log.info("user-dowork:{}",
+		log.info("user-do:{}",
 				Arrays.asList(new TempEvent("xiaolang3", "30005L"), new TempEvent("xiaolang4", "30006L")));
 
 		Thread.sleep(2000);

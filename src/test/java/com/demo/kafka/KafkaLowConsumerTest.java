@@ -3,8 +3,6 @@ package com.demo.kafka;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -19,7 +17,7 @@ import org.apache.kafka.common.TopicPartition;
  * 
  * 对 zookeeper 的依赖性降低（如：offset 不一定非要靠 zk 存储，自行存储 offset 即可，比如存在文件或者内存中）
  *
- * @author fuhw/vencano
+ * @author DeanKano/DeanKano
  * @date 2018-05-07
  */
 public class KafkaLowConsumerTest {
@@ -28,8 +26,8 @@ public class KafkaLowConsumerTest {
 		Properties props = new Properties();
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, groupName);
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-				"kfk1.test.tuboshi.co:9092,kfk2.test.tuboshi.co:9092,kfk3.test.tuboshi.co:9092");
-		// props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+				"kfk1.test.rangers.co:9092,kfk2.test.rangers.co:9092,kfk3.test.rangers.co:9092");
+//		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 		if (autoCommit) {
 			props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
 		} else {
@@ -49,9 +47,10 @@ public class KafkaLowConsumerTest {
 	}
 
 	public static void main(String[] args) {
-		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(3);
-		newFixedThreadPool.execute(() -> consumerMsg("group1"));
-		newFixedThreadPool.execute(() -> consumerMsg("group2"));
+//		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(3);
+//		newFixedThreadPool.execute(() -> consumerMsg("group1"));
+//		newFixedThreadPool.execute(() -> consumerMsg("group2"));
+		consumerMsg("group1");
 
 	}
 

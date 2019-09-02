@@ -23,7 +23,7 @@ import com.demo.kafka.KafkaConfigUtils;
  * version = "1.0.0", application = "${dubbo.application.id}", protocol =
  * "${dubbo.protocol.id}", registry = "${dubbo.registry.id}" )
  *
- * @author fuhw/vencano
+ * @author DeanKano/DeanKano
  * @date 2018-05-08
  */
 // @formatter:on

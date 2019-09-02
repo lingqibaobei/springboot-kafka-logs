@@ -7,6 +7,7 @@ import java.util.Map;
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
+import kafka.message.MessageAndMetadata;
 
 /**
  * 高级 API 写起来简单
@@ -21,25 +22,26 @@ import kafka.javaapi.consumer.ConsumerConnector;
  * 可以使用 group 来区分对同一个 topic 的不同程序访问分离开来（不同的 group 记录不同的 offset，这样不同程序读取同一个 topic
  * 才不会因为 offset 互相影响）
  *
- * @author fuhw/vencano
+ * @author DeanKano/DeanKano
  * @date 2018-05-07
  */
 public class KafkaHighConsumerTest {
 
 	public static void main(String[] args) {
 		int msgCount = 0;
-		String zkServersUrl = "zk1.test.tuboshi.co:2181,zk2.test.tuboshi.co:2181,zk3.test.tuboshi.co:2181";
-		ConsumerConnector consumer = KafkaConfigUtils.createHighConsumer(zkServersUrl);
-		
+		String zkServersUrl = "zk1.test.rangers.co:2181,zk2.test.rangers.co:2181,zk3.test.rangers.co:2181";
+		ConsumerConnector consumer = KafkaConfigUtils.createHighConsumer("tt",zkServersUrl);
+
 		Map<String, List<KafkaStream<byte[], byte[]>>> messageSteam = consumer
 				.createMessageStreams(Collections.singletonMap(KafkaConfigUtils.DEFAULT_TOPIC_NAME, 1));
-		
+
 		KafkaStream<byte[], byte[]> stream = messageSteam.get(KafkaConfigUtils.DEFAULT_TOPIC_NAME).get(0);
 		ConsumerIterator<byte[], byte[]> iterator = stream.iterator();
 		while (iterator.hasNext()) {
-			String message = new String(iterator.next().message());
+			MessageAndMetadata<byte[], byte[]> next = iterator.next();
+			String message = new String(next.message());
 			msgCount++;
-			System.err.println("consumer-msg" + msgCount + ":" + message);
+			System.err.println("partition=" + next.partition() + ",msg-no." + msgCount + ":" + message);
 		}
 	}
 }

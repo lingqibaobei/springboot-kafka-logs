@@ -22,10 +22,10 @@ public class UbtCtrl {
 	@Autowired
 	private LogsToKafkaService LogsToKafkaService;
 
-	@GetMapping("/dowork")
+	@GetMapping("/do")
 	public void login() {
-		List<String> mStrings = new ArrayList<>(100000);
-		for (int i = 0; i < 100000; i++) {
+		List<String> mStrings = new ArrayList<>(1000000);
+		for (int i = 0; i < 1000000; i++) {
 			try {
 				mStrings.add(mapper.writeValueAsString(new TempEvent(UUID.randomUUID().toString(), i + "")));
 			} catch (JsonProcessingException e) {

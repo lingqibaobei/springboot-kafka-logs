@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.12.RELEASE</version>
+		<version>1.5.16.RELEASE</version>
 		<relativePath />
 	</parent>
 
@@ -46,10 +46,6 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
-		<!-- <dependency> <groupId>org.springframework.kafka</groupId> <artifactId>spring-kafka</artifactId> 
-			<exclusions> <exclusion> <groupId>org.apache.kafka</groupId> <artifactId>kafka-clients</artifactId> 
-			</exclusion> </exclusions> </dependency> -->
 
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
