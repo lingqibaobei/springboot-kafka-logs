@@ -1,20 +1,24 @@
-package com.demo.kafka.logs;
+package com.demo.kafka.core;
 
-import org.apache.kafka.clients.producer.Callback;
+import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Layout;
+import com.demo.kafka.config.KafkaConfigHelper;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-import com.demo.kafka.KafkaConfigUtils;
-
-import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.Layout;
-
+/**
+ *
+ * @author Dean
+ * @date 2018-05-07
+ */
 public class KafkaAppender<E> extends AppenderBase<E> {
 
+    /**
+     * 此处,logback.xml中的logger的name属性,输出到本地
+     */
 	private static final Logger log = LoggerFactory.getLogger("local");
 	protected Layout<E> layout;
 	private Producer<String, String> producer;
@@ -23,7 +27,7 @@ public class KafkaAppender<E> extends AppenderBase<E> {
 	public void start() {
 		Assert.notNull(layout, "you don't set the layout of KafkaAppender");
 		super.start();
-		this.producer = KafkaConfigUtils.createProducer();
+		this.producer = KafkaConfigHelper.createProducer();
 	}
 
 	@Override
@@ -37,7 +41,7 @@ public class KafkaAppender<E> extends AppenderBase<E> {
 	protected void append(E event) {
 		String msg = layout.doLayout(event);
 		ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(
-				KafkaConfigUtils.DEFAULT_TOPIC_NAME, msg);
+				KafkaConfigHelper.DEFAULT_TOPIC_NAME, msg);
 		System.out.println("[推送数据]:" + producerRecord);
 		// Future<RecordMetadata> future = producer.send(producerRecord);
 		// try {
@@ -51,17 +55,14 @@ public class KafkaAppender<E> extends AppenderBase<E> {
 		// log.info("推送异常:{}", e.getMessage());
 		// }
 
-		producer.send(producerRecord, new Callback() {
-			@Override
-			public void onCompletion(RecordMetadata metadata, Exception exception) {
-				if (exception != null) {
-					exception.printStackTrace();
-					log.info(msg);
-				} else {
-					System.out.println("[推送数据到kafka成功]:" + metadata);
-				}
-			}
-		});
+		producer.send(producerRecord, (metadata, exception) -> {
+            if (exception != null) {
+                exception.printStackTrace();
+                log.info(msg);
+            } else {
+                System.out.println("[推送数据到kafka成功]:" + metadata);
+            }
+        });
 	}
 
 	public Layout<E> getLayout() {

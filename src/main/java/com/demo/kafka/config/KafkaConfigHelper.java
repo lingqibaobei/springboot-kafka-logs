@@ -1,4 +1,4 @@
-package com.demo.kafka;
+package com.demo.kafka.config;
 
 import java.util.Date;
 import java.util.Properties;
@@ -16,16 +16,16 @@ import kafka.javaapi.consumer.ConsumerConnector;
 /**
  * kafka统一配置
  *
- * @author DeanKano/DeanKano
+ * @author Dean/Dean
  * @date 2018-05-08
  */
-public class KafkaConfigUtils {
+public class KafkaConfigHelper {
 
 	private static final String TEST_KAFKA_SEVERS_URL = "kfk1.test.rangers.co:9092,kfk2.test.rangers.co:9092,kfk3.test.rangers.co:9092";
 
 	private static final String TOPIC_DATE_PATTERN = "yyyy-MM-dd";
 	private static final String DEFAULT_CONSUMER_GROUP_NAME = "_sys_default_group";
-	private static final String TOPIC_PREFIX = "_DeanKano_";
+	private static final String TOPIC_PREFIX = "_Dean_";
 	private static final String DEFAULT_ZK_SEVERS_URL = "localhost:2181";
 	private static final String DEFAULT_KAFKA_SEVERS_URL = "localhost:9092";
 	public static final String DEFAULT_TOPIC_NAME = getDefaultTopicNameByCurDate();
@@ -47,13 +47,17 @@ public class KafkaConfigUtils {
 	 * @param zkServersUrl
 	 *            zk服务地址,集群逗号分隔
 	 * @return
-	 * @author DeanKano/DeanKano
+	 * @author Dean/Dean
 	 */
 	public static ConsumerConnector createHighConsumer(String groupName, String zkServersUrl) {
-		if (StringUtils.isEmpty(groupName))
+		if (StringUtils.isEmpty(groupName)){
 			groupName = DEFAULT_CONSUMER_GROUP_NAME;
-		if (StringUtils.isEmpty(zkServersUrl))
+		}
+
+		if (StringUtils.isEmpty(zkServersUrl)){
 			zkServersUrl = DEFAULT_ZK_SEVERS_URL;
+		}
+
 		Properties props = new Properties();
 		// properties.put("zookeeper.connect",
 		// "zk1.test.rangers.co:2181,zk2.test.rangers.co:2181,zk3.test.rangers.co:2181");
@@ -78,11 +82,12 @@ public class KafkaConfigUtils {
 	 * @param kafkaServersUrl
 	 *            kafka服务地址,集群逗号分隔
 	 * @return
-	 * @author DeanKano/DeanKano
+	 * @author Dean/Dean
 	 */
 	public static Producer<String, String> createProducer(String kafkaServersUrl) {
-		if (StringUtils.isEmpty(kafkaServersUrl))
+		if (StringUtils.isEmpty(kafkaServersUrl)){
 			kafkaServersUrl = DEFAULT_KAFKA_SEVERS_URL;
+		}
 		Properties props = new Properties();
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServersUrl);
 		/**

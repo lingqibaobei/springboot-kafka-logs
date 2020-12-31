@@ -1,10 +1,16 @@
 
 # springboot整合logback收集日志到kafka
+## 简述
 
-异常容错机制
-> 如果kafka服务宕机,输出到本地文件,可用其他方式重新load数据记录;
+```
+本示例旨在快速整合kafka的使用，调参，优化，压测性能等操作；不建议直接作为生产使用，配置化，异常容错等等待处理；
+比如：容错机制
+- 如果kafka服务宕机,输出到本地文件,可用其他方式重新load数据记录;
+- 也可直接用kafka客户端写入到kafka中,手动针对异常做容错(如,写入文件)
+```
 
-> 也可直接用kafka客户端写入到kafka中,手动针对异常做容错(如,写入文件)
+
+##  Get Started
 
 - **1.pom依赖**
 - **2.logback.xml配置**
@@ -12,8 +18,8 @@
 - **4.测试代码**
 
 -------------------
-## 1.kafka相关pom依赖：(0.10.1.1版本)
-``` python
+### 1.kafka相关pom依赖：(0.10.1.1版本)
+``` 
 <dependency>
 	<groupId>org.apache.kafka</groupId>
 	<artifactId>kafka-clients</artifactId>
@@ -38,10 +44,10 @@
 	</exclusions>
 </dependency>
 ```
-sl4j依赖,自行选择;此处整合springboot,未单独引入
+> sl4j依赖,自行选择;此处整合springboot,未单独引入
 
-## 2.logback的配置
-``` python
+### 2.logback的配置
+``` 
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
@@ -84,7 +90,7 @@ sl4j依赖,自行选择;此处整合springboot,未单独引入
 
 	<!-- 业务日志：写入kafka -->
 	<appender name="KAFKA-EVENTS"
-		class="com.demo.kafka.logs.KafkaAppender">
+		class="com.demo.kafka.core.KafkaAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<pattern>%msg</pattern>
 		</layout>
@@ -146,7 +152,7 @@ sl4j依赖,自行选择;此处整合springboot,未单独引入
 </configuration>
 ```
 
-## 3.自定义KafkaAppender
+### 3.自定义KafkaAppender
 上述logback.xml中的com.demo.kafka.logs.KafkaAppender
 
 ``` python
@@ -160,7 +166,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-import com.demo.kafka.KafkaConfigUtils;
+import com.demo.kafka.config.KafkaConfigHelper;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.Layout;
@@ -218,8 +224,6 @@ public class KafkaAppender<E> extends AppenderBase<E> {
 ``` 
 
 
-
-
 ### 4.测试代码段
 
 ```python
@@ -235,3 +239,15 @@ private static final Logger log = LoggerFactory.getLogger("kafka-event");
 	}
 
 ```
+
+## 其他
+
+> http://localhost:8080/producer/do?msgContent=1000 压测kafka生产消息性能
+
+> com.demo.kafka 该目录测试调参，优化等 [High Consumer,Low Consumer,Producer ,Stream...]
+
+### 唠唠嗑
+
+| 联系我 | 下午茶(支付宝) |  下午茶(微信)|
+| :------: | :------: | :------: |
+| <img src="https://note.youdao.com/yws/api/personal/file/WEB87ca0fa2c0ee3e9f6c32fe5523f88c88?method=download&shareKey=907b187d00e41a0128f13e575ddf7f10" width="200"> |<img src="https://note.youdao.com/yws/api/personal/file/WEB143ed930a3562f2e65442a3f5b0e7bdd?method=download&shareKey=7a6847f4a2a61ee61522cf3ae7324846" width="200"> | <img src="https://note.youdao.com/yws/api/personal/file/WEBcc0561b27e1f96f089d624af2ad710ed?method=download&shareKey=b6ada6ef8e555407a34fd19f238eba0b" width="200">|  

@@ -40,7 +40,7 @@
 
 	<!-- 业务日志：写入kafka -->
 	<appender name="KAFKA-EVENTS"
-		class="com.demo.kafka.logs.KafkaAppender">
+		class="com.demo.kafka.core.KafkaAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<pattern>%msg</pattern>
 		</layout>
