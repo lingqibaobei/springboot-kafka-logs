@@ -1,0 +1,41 @@
+spring:
+  kafka:
+    bootstrap-servers:
+    - localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      batch-size: 100
+    listener:
+      concurrency: 3
+    consumer:
+      group-id: defaultConsumer
+  application:
+    name: springboot-kafka
+logback:
+  path: data/logs/service-log
+  level: DEBUG
+
+
+
+#
+##kafka配置信息
+#kafka:
+#  producer:
+#    bootstrap-servers: 10.161.11.222:6667,10.161.11.223:6667,10.161.11.224:6667
+#    batch-size: 16785                                   #一次最多发送数据量
+#    retries: 1                                          #发送失败后的重复发送次数
+#    buffer-memory: 33554432                             #32M批处理缓冲区
+#    linger: 1
+#  consumer:
+#    bootstrap-servers: 10.161.11.222:6667,10.161.11.223:6667,10.161.11.224:6667
+#    auto-offset-reset: latest                           #最早未被消费的offset earliest
+#    max-poll-records: 3100                              #批量消费一次最大拉取的数据量
+#    enable-auto-commit: false                           #是否开启自动提交
+#    auto-commit-interval: 1000                          #自动提交的间隔时间
+#    session-timeout: 20000                              #连接超时时间
+#    max-poll-interval: 15000                            #手动提交设置与poll的心跳数,如果消息队列中没有消息，等待毫秒后，调用poll()方法。如果队列中有消息，立即消费消息，每次消费的消息的多少可以通过max.poll.records配置。
+#    max-partition-fetch-bytes: 15728640                 #设置拉取数据的大小,15M
+#  listener:
+#    batch-listener: true                                #是否开启批量消费，true表示批量消费
+#    concurrencys: 3,6                                   #设置消费的线程数
+#    poll-timeout: 1500                                  #只限自动提交，

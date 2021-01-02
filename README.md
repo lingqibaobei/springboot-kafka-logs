@@ -15,3 +15,4 @@
 | 项目名称| 描述 | 
 | -----------------------|------------|
 | springboot-kafka-logs| [基于logback日志收集到kafka](springboot-kafka-logs/README.md)  | 
+| springboot-kafka| [spring-kafka整合springboot](springboot-kafka/README.md)  | 
