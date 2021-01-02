@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: springboot-kafka-logs
+zk:
+  servers:
+    url: localhost
