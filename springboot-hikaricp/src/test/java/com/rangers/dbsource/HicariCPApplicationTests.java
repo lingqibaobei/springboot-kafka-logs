@@ -17,11 +17,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles("multi")
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ApplicationTests {
+public class HicariCPApplicationTests {
 	
 
 	@Test
-	public void SPELTest() {
+	public void sPELTest() {
 		ExpressionParser parser = new SpelExpressionParser();
 		Boolean bt = parser.parseExpression("3 between {2,5}").getValue(Boolean.class);
 		Assert.assertTrue(bt);

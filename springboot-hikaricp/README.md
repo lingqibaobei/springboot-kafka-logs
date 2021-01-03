@@ -2,7 +2,7 @@
 
 <img src="./static/hikaricp-func.png" width="660px" height="400px"> 
 		
-> hikariCP官网:  http://brettwooldridge.github.io/HikariCP/
+> hikariCP官网:  https://github.com/brettwooldridge/HikariCP
 
 在引入spring-boot-starter-jdbc后，内部包含了tomcat-jdbc包，里面有tomcat连接池.然后通过自动配置DataSourceAutoConfigurer创建DataSource对象。
 
