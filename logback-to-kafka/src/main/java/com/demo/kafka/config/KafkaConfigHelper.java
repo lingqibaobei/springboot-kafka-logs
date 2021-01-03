@@ -1,17 +1,15 @@
 package com.demo.kafka.config;
 
-import java.util.Date;
-import java.util.Properties;
-
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.util.StringUtils;
 
-import kafka.consumer.Consumer;
-import kafka.consumer.ConsumerConfig;
-import kafka.javaapi.consumer.ConsumerConnector;
+import java.util.Date;
+import java.util.Properties;
 
 /**
  * kafka统一配置
@@ -24,12 +22,8 @@ public class KafkaConfigHelper {
     /**
      * 示例： kfk1.test.rangers.co:9092,kfk2.test.rangers.co:9092,kfk3.test.rangers.co:9092
      */
-    private static final String TEST_KAFKA_SEVERS_URL = "";
-
     private static final String TOPIC_DATE_PATTERN = "yyyy-MM-dd";
-    private static final String DEFAULT_CONSUMER_GROUP_NAME = "_sys_default_group";
     private static final String TOPIC_PREFIX = "_Dean_";
-    private static final String DEFAULT_ZK_SEVERS_URL = "localhost:2181";
     private static final String DEFAULT_KAFKA_SEVERS_URL = "localhost:9092";
     public static final String DEFAULT_TOPIC_NAME = getDefaultTopicNameByCurDate();
 
@@ -38,51 +32,15 @@ public class KafkaConfigHelper {
         return TOPIC_PREFIX + format;
     }
 
-    public static ConsumerConnector createHighConsumer(String zkServersUrl) {
-        return createHighConsumer(DEFAULT_CONSUMER_GROUP_NAME, zkServersUrl);
-    }
-
-    /**
-     * 配置消费者
-     *
-     * @param groupName 分组名称
-     * @param zkServersUrl zk服务地址,集群逗号分隔
-     * @return
-     * @author Dean/Dean
-     */
-    public static ConsumerConnector createHighConsumer(String groupName, String zkServersUrl) {
-        if (StringUtils.isEmpty(groupName)) {
-            groupName = DEFAULT_CONSUMER_GROUP_NAME;
-        }
-
-        if (StringUtils.isEmpty(zkServersUrl)) {
-            zkServersUrl = DEFAULT_ZK_SEVERS_URL;
-        }
-
-        Properties props = new Properties();
-        // properties.put("zookeeper.connect",
-        // "zk1.test.rangers.co:2181,zk2.test.rangers.co:2181,zk3.test.rangers.co:2181");
-        props.put("zookeeper.connect", zkServersUrl);
-        props.put("offsets.storage", "zookeeper");
-        props.put("auto.offset.reset", "largest");
-        props.put("auto.commit.enable", "true");
-        props.put("auto.commit.interval.ms", "2000");
-        props.put("group.id", groupName);
-        return Consumer.createJavaConsumerConnector(new ConsumerConfig(props));
-
-    }
-
     public static Producer<String, String> createProducer() {
-        return createProducer(
-                StringUtils.isEmpty(TEST_KAFKA_SEVERS_URL) ? DEFAULT_KAFKA_SEVERS_URL : TEST_KAFKA_SEVERS_URL);
+        return createProducer(DEFAULT_KAFKA_SEVERS_URL);
     }
 
     /**
      * 配置生产者
      *
      * @param kafkaServersUrl kafka服务地址,集群逗号分隔
-     * @return
-     * @author Dean/Dean
+     * @return Producer
      */
     public static Producer<String, String> createProducer(String kafkaServersUrl) {
         if (StringUtils.isEmpty(kafkaServersUrl)) {
@@ -118,6 +76,49 @@ public class KafkaConfigHelper {
         // props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "gzip");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-        return new KafkaProducer<String, String>(props);
+        return new KafkaProducer<>(props);
     }
+
+    /**
+     * @param groupName group name
+     * @return KafkaConsumer
+     */
+    public static KafkaConsumer<String, String> createConsumer(String groupName) {
+        return createConsumer(groupName, DEFAULT_KAFKA_SEVERS_URL, true);
+    }
+
+    /**
+     * @param groupName group name
+     * @param autoCommit auto commit
+     * @return KafkaConsumer
+     */
+    public static KafkaConsumer<String, String> createConsumer(String groupName, Boolean autoCommit) {
+        return createConsumer(groupName, DEFAULT_KAFKA_SEVERS_URL, autoCommit);
+    }
+
+    /**
+     * @param groupName group name
+     * @param autoCommit auto commit
+     * @param kafkaServers kafka servers url
+     * @return KafkaConsumer
+     */
+    public static KafkaConsumer<String, String> createConsumer(String groupName, String kafkaServers, Boolean autoCommit) {
+        Properties props = new Properties();
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupName);
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServers);
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, autoCommit.toString());
+        //自动位移提交间隔时间
+        props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 1000);
+        // latest none earliest
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        // 每次poll方法调用都是client与server的一次心跳
+        props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "2");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+                "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                "org.apache.kafka.common.serialization.StringDeserializer");
+        return new KafkaConsumer<>(props);
+    }
+
 }

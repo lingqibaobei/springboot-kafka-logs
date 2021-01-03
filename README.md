@@ -8,7 +8,7 @@
 | IDE   | IntelliJ IDEA |
 | Maven | 3.x|
 | spring-cloud |Greenwich.SR2 |
-| spring-boot |1.5.18.RELEASE |
+| spring-boot |2.1.6.RELEASE |
 
 ### 功能模块：
 

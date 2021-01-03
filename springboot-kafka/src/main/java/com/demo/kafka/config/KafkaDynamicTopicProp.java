@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
+ * 动态topic的实现
  * @author Dean
  * @date 2021-01-02
  */
