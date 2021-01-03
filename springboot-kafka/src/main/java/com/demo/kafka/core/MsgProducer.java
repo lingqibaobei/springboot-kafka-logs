@@ -30,11 +30,6 @@ public class MsgProducer {
     @Resource
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public static void main(String[] args) {
-        System.out.println(getTopicName());
-    }
-
-
     public static String getTopicName() {
         LocalDateTime localDateTime = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault());
         String format = localDateTime.format(DateTimeFormatter.ofPattern(TOPIC_DATE_PATTERN));

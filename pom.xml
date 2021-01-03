@@ -16,7 +16,7 @@
     </parent>
 
     <modules>
-        <module>springboot-kafka-logs</module>
+        <module>logback-to-kafka</module>
         <module>springboot-kafka</module>
     </modules>
 

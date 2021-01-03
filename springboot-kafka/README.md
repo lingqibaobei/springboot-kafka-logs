@@ -21,3 +21,26 @@ Spring Boot 2.2用户应使用2.3.x（引导依赖性管理将使用正确的版
 Spring Boot 2.3用户应使用2.5.x（引导依赖项管理将使用正确的版本）。
 Spring Boot 2.4用户应该使用2.6.x（Boot依赖管理将使用正确的版本）
 ```
+
+
+## Get Started
+
+
+### 1 maven依赖
+
+```xml
+ <dependency>
+    <groupId>org.springframework.kafka</groupId>
+    <artifactId>spring-kafka</artifactId>
+    <version>${spring-kafka.version}</version>
+</dependency>
+```
+
+### 2 Producer
+
+> `@EnableKafka`启用kafka自动配置，使用`KafkaTemplate<String, String>` 客户端
+
+### 3 Consumer
+
+> `@KafkaListener(topics = "#{kafkaDynamicTopicProp.topicName}", groupId = "A")` 监听消费kafka
+
