@@ -14,7 +14,7 @@
 
 | 项目名称| 描述 | 状态
 | ---|------------|:---:
-| logback-to-kafka| [基于logback日志收集到kafka](logback-to-kafka/README.md)  | <font color='#33cc00' size=4>**DONE**</font>
-| springboot-kafka| [spring-kafka整合springboot](springboot-kafka/README.md)  | <font color='#33cc00' size=4>**DONE**</font>
-| springboot-hikaricp| [hikaricp单数据源,多数据整合示例](springboot-hikaricp/README.md)  | <font color='#ff3300' size=4>**DOING**</font>
-| flume-logs-collect| [flume日志收集:落地到kafka，file等](flume-logs-collect/README.md)  | <font color='#ff9900' size=4>**TODO**</font>
+| logback-to-kafka| [基于logback日志收集到kafka](logback-to-kafka/README.md)  | ✅
+| springboot-kafka| [spring-kafka整合springboot](springboot-kafka/README.md)  | ✅
+| springboot-hikaricp| [hikaricp单数据源,多数据整合示例](springboot-hikaricp/README.md)  | 🖌
+| flume-logs-collect| [flume日志收集:落地到kafka，file等](flume-logs-collect/README.md)  | ❌
