@@ -40,7 +40,7 @@ Spring Boot 2.4用户应该使用2.6.x（Boot依赖管理将使用正确的版�
 
 -------------------
 ### 1.kafka相关pom依赖：(0.10.1.1版本)
-``` 
+```xml
 <dependency>
 	<groupId>org.apache.kafka</groupId>
 	<artifactId>kafka-clients</artifactId>
@@ -68,7 +68,7 @@ Spring Boot 2.4用户应该使用2.6.x（Boot依赖管理将使用正确的版�
 > sl4j依赖,自行选择;此处整合springboot,未单独引入
 
 ### 2.logback的配置
-``` 
+``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
@@ -176,7 +176,7 @@ Spring Boot 2.4用户应该使用2.6.x（Boot依赖管理将使用正确的版�
 ### 3.自定义KafkaAppender
 上述logback.xml中的com.demo.kafka.logs.KafkaAppender
 
-``` python
+``` java
 package com.demo.kafka.logs;
 
 import org.apache.kafka.clients.producer.Callback;
@@ -247,7 +247,7 @@ public class KafkaAppender<E> extends AppenderBase<E> {
 
 ### 4.测试代码段
 
-```python
+```
 //logback.xml中logger的name属性(输出到kafka)
 private static final Logger log = LoggerFactory.getLogger("kafka-event");
 	@Override
