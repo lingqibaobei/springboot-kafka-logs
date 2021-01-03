@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active:
+    - single
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true

@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/hikaricp?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=utf-8mb4&amp;amp;autoReconnect=true&useSSL=false
+    hikari:
+      max-lifetime: 2000000
+      maximum-pool-size: 5
+      minimum-idle: 3
+      auto-commit: true
+      connection-timeout: 30000

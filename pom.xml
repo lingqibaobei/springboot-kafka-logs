@@ -18,6 +18,8 @@
     <modules>
         <module>logback-to-kafka</module>
         <module>springboot-kafka</module>
+        <module>flume-logs-collect</module>
+        <module>springboot-hikaricp</module>
     </modules>
 
     <properties>
