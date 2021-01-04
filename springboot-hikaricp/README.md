@@ -1,8 +1,23 @@
 ## springboot+hikariCP 连接池(单数据源，多数据源示例)
 
-<img src="./static/hikaricp-func.png" width="660px" height="400px"> 
+
+### 简介
+![性能比对](https://github.com/brettwooldridge/HikariCP/wiki/HikariCP-bench-2.6.0.png)
+
+ * One *Connection Cycle* is defined as single ``DataSource.getConnection()``/``Connection.close()``.
+ * One *Statement Cycle* is defined as single ``Connection.prepareStatement()``, ``Statement.execute()``, ``Statement.close()``.
+
+<sup>
+<sup>1</sup> Versions: HikariCP 2.6.0, commons-dbcp2 2.1.1, Tomcat 8.0.24, Vibur 16.1, c3p0 0.9.5.2, Java 8u111 <br/>
+<sup>2</sup> Intel Core i7-3770 CPU @ 3.40GHz <br/>
+<sup>3</sup> Uncontended benchmark: 32 threads/32 connections, Contended benchmark: 32 threads, 16 connections <br/>
+<sup>4</sup> Apache Tomcat fails to complete the Statement benchmark when the Tomcat <i>StatementFinalizer</i> is used <a href="https://raw.githubusercontent.com/wiki/brettwooldridge/HikariCP/markdown/Tomcat-Statement-Failure.md">due to excessive garbage collection times</a><br/>
+<sup>5</sup> Apache DBCP fails to complete the Statement benchmark <a href="https://raw.githubusercontent.com/wiki/brettwooldridge/HikariCP/markdown/Dbcp2-Statement-Failure.md">due to excessive garbage collection times</a>
+</sup>
 		
 > hikariCP官网:  https://github.com/brettwooldridge/HikariCP
+> hikariCP基准测试:  https://github.com/brettwooldridge/HikariCP-benchmark
+
 
 在引入spring-boot-starter-jdbc后，内部包含了tomcat-jdbc包，里面有tomcat连接池.然后通过自动配置DataSourceAutoConfigurer创建DataSource对象。
 
