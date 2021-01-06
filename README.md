@@ -1,4 +1,4 @@
-## java-framework-started-awesome @author Dean
+## java-framework-started-awesome
 
 ### 环境：
 
