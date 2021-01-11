@@ -19,6 +19,13 @@
 | springboot-hikaricp| [hikaricp单数据源,多数据整合示例](springboot-hikaricp/README.md)  | 🖌
 | flume-logs-collect| [flume日志收集:落地到kafka，file等](flume-logs-collect/README.md)  | ❌
 
+### 参与贡献
+
+1. Fork 本仓库
+2. 新建 feature/20201201_xxx 分支
+3. 提交代码
+4. 新建 Pull Request
+
 
 ### License
 [Apache-2.0 License](https://github.com/dean-coding/java-framework-started-awesome/blob/master/LICENSE)
