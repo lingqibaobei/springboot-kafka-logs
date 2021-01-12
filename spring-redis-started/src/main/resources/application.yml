@@ -1,0 +1,16 @@
+spring:
+  redis:
+    database: 13
+    host: localhost
+    port: 6379
+#    password: localhost
+    timeout: 6000
+    jedis:
+      pool:
+        max-active: 5000
+        max-wait: -1  # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 2000
+        min-idle: 5
+#
+#logging:
+#  level: debug
