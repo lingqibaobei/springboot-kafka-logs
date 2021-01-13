@@ -18,7 +18,7 @@
     <modules>
         <module>logback-to-kafka</module>
         <module>springboot-kafka</module>
-        <module>spring-redis-started</module>
+        <module>springboot-redis-started</module>
     </modules>
 
     <properties>
