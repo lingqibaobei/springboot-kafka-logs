@@ -4,10 +4,11 @@
 
 ## 环境：
 
- 框架 | springboot 1.5.x版本 | springboot 2.1.x版本
--------- | -----|-----|
-spring-boot |1.5.18.RELEASE | 2.1.6.RELEASE
-spring-kafka |1.3.5.RELEASE |2.2.5.RELEASE
+ 框架 | 版本 | 
+-------- | -----
+spring-boot |2.1.6.RELEASE 
+spring-kafka |2.2.5.RELEASE |
+kafka-clients |2.0.1 |
 
 > 注意：`分支支持的版本，技术文档更新，版本的对应关系，开始示例前确保kafka服务已启动等`
 

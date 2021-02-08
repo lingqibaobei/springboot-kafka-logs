@@ -37,7 +37,7 @@ public class DemoCtrl {
     }
 
     @GetMapping("/do")
-    public void providerMsg(@RequestParam(value = "msgContent", defaultValue = "1000000", required = false) int msgContent) {
+    public void providerMsg(@RequestParam(value = "msgContent", defaultValue = "1000000", required = false) int msgContent, @RequestParam(value = "isLog", required = false) boolean isLog) {
         List<String> msgContents = new ArrayList<>(msgContent);
         for (int i = 0; i < msgContent; i++) {
             try {
@@ -46,6 +46,11 @@ public class DemoCtrl {
                 log.error("", e);
             }
         }
-        logsToKafkaService.produceBatchByClient(msgContents);
+        if (isLog) {
+            logsToKafkaService.produceByLogBatch(msgContents);
+        } else {
+            logsToKafkaService.produceBatchByClient(msgContents);
+        }
     }
+
 }

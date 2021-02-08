@@ -1,6 +1,5 @@
+HELP.md
 /target/
-/logs/
-*.log
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -20,10 +19,11 @@
 
 ### NetBeans ###
 /nbproject/private/
-/build/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-### project
-/flume-logs-collect/
+/build/
+
+### VS Code ###
+.vscode/

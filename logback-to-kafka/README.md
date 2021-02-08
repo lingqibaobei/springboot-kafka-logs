@@ -14,8 +14,8 @@
 
 | 框架    | 版本或描述 |
 | ----- | ------------|
-| spring-boot |1.5.18.RELEASE |
-| kafka-clients |0.10.1.1 |
+| spring-boot |2.1.6.RELEASE |
+| kafka-clients |2.0.1 |
 
 > 注意：`分支支持的版本，技术文档更新，版本的对应关系，开始示例前确保kafka服务已启动等`
 
