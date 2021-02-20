@@ -14,6 +14,7 @@
 
 | 项目名称| 描述 | 状态 |
 | -----------------------|------------|----|
+| devops-practice|[自动化运维实践](devops-practice/README.md) | ✒️
 | logback-to-kafka| [基于logback日志收集到kafka](logback-to-kafka/README.md)  | ✅
 | springboot-kafka| [spring-kafka整合springboot](springboot-kafka/README.md)  | ✅
 | springboot-redis-started| [基于redisTemplate实践redis的事务，管道，监听，lua脚本等功能](springboot-redis-started/README.md)  | ✅
