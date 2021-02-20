@@ -21,12 +21,12 @@
 :---|:---:|:---|:---:|---
 `gateway-service` | `9999` | API网关| ✅ | [网关API](http://47.98.168.56:9999/swagger-ui.html)
 `eureka-registry` | `8761`| 注册中心| ✅ | [注册中心地址](http://47.98.168.56:8761/)
-`producer-service` | `8881`| 服务提供者| ✅ | 经网关调用：curl -X GET http://47.98.168.56:9999/producer/hello<br>
-`consumer-service` | `8882`| 服务消费者| ✅ | 经网关调用：curl -X GET http://47.98.168.56:9999/consumer/hello<br> 调用`producer-service`服务：curl -X GET http://47.98.168.56:9999/consumer/call
+`producer-service` | `8881`| 服务提供者| ✅ | 经网关调用：http://47.98.168.56:9999/producer/hello<br>
+`consumer-service` | `8882`| 服务消费者| ✅ | 经网关调用：http://47.98.168.56:9999/consumer/hello<br> 调用`producer-service`服务：http://47.98.168.56:9999/consumer/call
 `CI/CD` |`8888` |  | ✅ |  [Jenkins](http://47.98.168.56:8888/)<br>账户密码: user_sample/user_123
 APP应用监控 | | | ✅ |[app-monitor](http://47.98.168.56:3000/d/XT923gPGz/app-monitor?orgId=1)<br>账户密码: user_sample/user_123|
 OS系统监控 | | | ✅ |[sys-monitor](http://47.98.168.56:3000/d/9CWBz0bik/sys-monitor)<br>账户密码: user_sample/user_123|
 Container容器监控 | | |❌|[container-monitor](http://47.98.168.56:3000)<br>账户密码: user_sample/user_123|
 
 
-## 架构设计
+## 架构设计🖌
