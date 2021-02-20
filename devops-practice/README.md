@@ -23,10 +23,10 @@
 `eureka-registry` | `9000`| 注册中心| ✅ | 
 `producer-service` | `8881`| 服务提供者| ✅ |
 `consumer-service` | `8882`| 服务消费者| ✅ | 
-`CI/CD` |`8888` |  | ✅ |  [Jenkins](http://47.98.168.56:8888/)<br>账户密码: user-sample/user_123
-APP应用监控 | | | ✅ |[app-monitor](http://47.98.168.56:3000/d/XT923gPGz/app-monitor?orgId=1)<br>账户密码: user-sample/user_123|
-OS系统监控 | | | ✅ |[sys-monitor](http://47.98.168.56:3000/d/9CWBz0bik/dean-test-dashboard?orgId=1)<br>账户密码: user-sample/user_123|
-Container容器监控 | | |❌|[container-monitor](http://47.98.168.56:3000)<br>账户密码: user-sample/user_123|
+`CI/CD` |`8888` |  | ✅ |  [Jenkins](http://47.98.168.56:8888/)<br>账户密码: user_sample/user_123
+APP应用监控 | | | ✅ |[app-monitor](http://47.98.168.56:3000/d/XT923gPGz/app-monitor?orgId=1)<br>账户密码: user_sample/user_123|
+OS系统监控 | | | ✅ |[sys-monitor](http://47.98.168.56:3000/d/9CWBz0bik/sys-monitor)<br>账户密码: user_sample/user_123|
+Container容器监控 | | |❌|[container-monitor](http://47.98.168.56:3000)<br>账户密码: user_sample/user_123|
  
 
 ## 架构设计
