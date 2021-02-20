@@ -19,8 +19,8 @@
 ## 实践规划
 服务 | 端口 |功能|状态|描述|
 :---|:---:|:---|:---:|---
-`gateway-service` | `9999` | API网关| ✅ |
-`eureka-registry` | `9000`| 注册中心| ✅ | 
+`gateway-service` | `9999` | API网关| ✅ | [网关API](http://47.98.168.56:9999/swagger-ui.html)
+`eureka-registry` | `8761`| 注册中心| ✅ | [注册中心地址](http://47.98.168.56:8761/)
 `producer-service` | `8881`| 服务提供者| ✅ |
 `consumer-service` | `8882`| 服务消费者| ✅ | 
 `CI/CD` |`8888` |  | ✅ |  [Jenkins](http://47.98.168.56:8888/)<br>账户密码: user_sample/user_123
