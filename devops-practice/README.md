@@ -18,11 +18,11 @@
 
 ## 实践规划
 服务 | 端口 |功能|状态|描述|
-:---|:---:|:---|:---:|---
-`gateway-service` | `9999` | API网关| ✅ | [网关API](http://47.98.168.56:9999/swagger-ui.html)
-`eureka-registry` | `8761`| 注册中心| ✅ | [注册中心地址](http://47.98.168.56:8761/)
-`producer-service` | `8881`| 服务提供者| ✅ | 经网关调用：http://47.98.168.56:9999/producer/hello<br>
-`consumer-service` | `8882`| 服务消费者| ✅ | 经网关调用：http://47.98.168.56:9999/consumer/hello<br> 调用`producer-service`服务：http://47.98.168.56:9999/consumer/call
+:---|:---:|:---|:----|---
+`gateway-service` | `9999` | API网关| ✅ [容器状态](http://47.98.168.56:2375/containers/gateway-service/json)| [网关API](http://47.98.168.56:9999/swagger-ui.html) 
+`eureka-registry` | `8761`| 注册中心| ✅[容器状态](http://47.98.168.56:2375/containers/eureka-registry/json) | [注册中心地址](http://47.98.168.56:8761/)
+`producer-service` | `8881`| 服务提供者| ✅ [容器状态](http://47.98.168.56:2375/containers/producer-service/json)| 经网关调用：http://47.98.168.56:9999/producer/hello<br>
+`consumer-service` | `8882`| 服务消费者| ✅ [容器状态](http://47.98.168.56:2375/containers/consumer-service/json)| 经网关调用：http://47.98.168.56:9999/consumer/hello<br> 调用`producer-service`服务：http://47.98.168.56:9999/consumer/call<br>
 `CI/CD` |`8888` |  | ✅ |  [Jenkins](http://47.98.168.56:8888/)<br>账户密码: user_sample/user_123
 APP应用监控 | | | ✅ |[app-monitor](http://47.98.168.56:3000/d/XT923gPGz/app-monitor?orgId=1)<br>账户密码: user_sample/user_123|
 OS系统监控 | | | ✅ |[sys-monitor](http://47.98.168.56:3000/d/9CWBz0bik/sys-monitor)<br>账户密码: user_sample/user_123|
