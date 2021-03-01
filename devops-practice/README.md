@@ -16,17 +16,19 @@
 | spring-cloud-starter-gateway | 2.1.2.RELEASE |
 
 
+
 ## 实践规划
 服务 | 端口 |功能|状态|描述|
-:---|:---:|:---|:----|---
-`gateway-service` | `9999` | API网关| ✅[容器状态](http://47.98.168.56:2375/containers/gateway-service/json)| [网关API](http://47.98.168.56:9999/swagger-ui.html) 
-`eureka-registry` | `8761`| 注册中心| ✅[容器状态](http://47.98.168.56:2375/containers/eureka-registry/json) | [注册中心地址](http://47.98.168.56:8761/)
-`producer-service` | `8881`| 服务提供者| ✅[容器状态](http://47.98.168.56:2375/containers/producer-service/json)| 经网关调用：http://47.98.168.56:9999/producer/hello<br>
-`consumer-service` | `8882`| 服务消费者| ✅[容器状态](http://47.98.168.56:2375/containers/consumer-service/json)| 经网关调用：http://47.98.168.56:9999/consumer/hello<br> 调用`producer-service`服务：http://47.98.168.56:9999/consumer/call<br>
-`CI/CD` |`8888` |  | ✅ |  [Jenkins](http://47.98.168.56:8888/)<br>账户密码: user_sample/user_123
-APP应用监控 | | | ✅ |[app-monitor](http://47.98.168.56:3000/d/XT923gPGz/app-monitor?orgId=1)<br>账户密码: user_sample/user_123|
-OS系统监控 | | | ✅ |[sys-monitor](http://47.98.168.56:3000/d/9CWBz0bik/sys-monitor)<br>账户密码: user_sample/user_123|
-Container容器监控 | | |✅|[container-monitor](http://47.98.168.56:3000/d/H5ukxSyGz/container-monitor?orgId=1&refresh=5m)<br>账户密码: user_sample/user_123|
+:---|:---:|:---|:----|:---
+`gateway-service` | `9999` | API网关| ✅| [网关API](http://47.103.88.209:9999/swagger-ui.html) 
+`eureka-registry` | `8761`| 注册中心| ✅| [注册中心地址](http://47.103.88.209:8761/)
+`producer-service` | `8881`| 服务提供者| ✅| 经网关调用：[http://47.103.88.209:9999/producer/hello](http://47.103.88.209:9999/producer/hello)<br>
+`consumer-service` | `8882`| 服务消费者| ✅| 经网关调用：[http://47.103.88.209:9999/consumer/hello](http://47.103.88.209:9999/consumer/hello)<br> 调用`producer-service`服务：[http://47.103.88.209:9999/consumer/call](http://47.103.88.209:9999/consumer/call)<br>
+`CI/CD` |`8888` |  | ✅ |  [Jenkins](http://47.103.88.209:8888/)<br>账户密码: user_sample/user_123
+APP应用监控 | | | ✅ |[app-monitor](http://47.103.88.209:3000/d/8Z4_LPsMk/app-monitor?orgId=1&refresh=30s)<br>账户密码: user_sample/user_123|
+OS系统监控 | | | ✅ |[sys-monitor](http://47.103.88.209:3000/d/9CWBz0bik/sys-monitor?orgId=1)<br>账户密码: user_sample/user_123|
+Container容器监控 | | |✅|[container-monitor](http://47.103.88.209:3000/d/p6JPYPyMz/container-monitor?orgId=1&refresh=5m)<br>账户密码: user_sample/user_123|
 
 
-## 架构设计🖌
+## 架构设计🖌（DOING）
+![docker部署与传统部署的区别](https://img-blog.csdnimg.cn/20210228111120688.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTIwMzE3NTU=,size_16,color_FFFFFF,t_70)
