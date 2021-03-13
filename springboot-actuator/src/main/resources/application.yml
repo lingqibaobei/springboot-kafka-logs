@@ -1,0 +1,25 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: springboot-actuator
+# 注意：在Spring Boot 2.0.5(2.1.6不支持) 中对Actuator变动很大，默认只提供这三个接口，
+# 如果想提供所有接口需要配置application.yml，配置之后重新访问/actuator就会暴露出所有接口
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        # health,info
+#        include: "*"
+#      base-path: /actuator
+
+
+## info endpoint 对应配置
+info:
+  app:
+    name: "@DeanKano"
+    encoding: '@project.version@'
+    java:
+      source: '@1.8.0@'
+      target: '@1.8.0@'
+

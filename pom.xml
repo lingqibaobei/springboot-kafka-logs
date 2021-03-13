@@ -19,6 +19,7 @@
         <module>logback-to-kafka</module>
         <module>springboot-kafka</module>
         <module>springboot-redis-started</module>
+        <module>springboot-actuator</module>
     </modules>
 
     <properties>
