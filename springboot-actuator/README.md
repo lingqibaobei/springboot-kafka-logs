@@ -1,4 +1,4 @@
-# springboot整合actuator-1
+# springboot整合actuator
 
 ## 一 简介
 在Spring Boot的众多模块中，actuator(`spring-boot-starter-actuator`) 不同于其他模块，它完全是一个用于暴露自身信息的模块，主要作用是用于监控与管理
@@ -103,4 +103,4 @@ shutdown|允许应用优雅的方式关闭，默认不开启
 trace显示|trace信息（默认为最新一些http请求）
 ...|...
 
-### see more detail: [博客链接](http://know.himygirl.cn/topic/spring/springboot-actuator/springboot-actuator1.html)
+## see more details : [博客链接](http://know.himygirl.cn/topic/spring/springboot-actuator/springboot-actuator1.html)
