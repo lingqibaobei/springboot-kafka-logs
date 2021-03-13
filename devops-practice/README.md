@@ -32,3 +32,6 @@ Container容器监控 | | |✅|[container-monitor](http://47.103.88.209:3000/d/p
 
 ## 架构设计🖌（DOING）
 ![docker部署与传统部署的区别](https://img-blog.csdnimg.cn/20210228111120688.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTIwMzE3NTU=,size_16,color_FFFFFF,t_70)
+
+## see more details : [博客链接](http://know.himygirl.cn/devops/)
+
