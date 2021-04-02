@@ -1,5 +1,7 @@
 
 
-#### http://localhost:8080/hystrix
+### springboot-actuator
 
-#### http://localhost:8080/hystrix.stream
+> @see http://know.himygirl.cn/topic/spring/springboot-actuator/springboot-actuator1.html
+
+> @see http://know.himygirl.cn/topic/spring/springboot-actuator/springboot-actuator2.html
