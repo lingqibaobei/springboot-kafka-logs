@@ -9,7 +9,6 @@
         <version>1.0.1</version>
     </parent>
 
-    <groupId>com.example</groupId>
     <artifactId>springboot-actuator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 

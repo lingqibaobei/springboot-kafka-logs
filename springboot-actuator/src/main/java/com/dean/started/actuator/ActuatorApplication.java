@@ -1,4 +1,4 @@
-package com.demo.actuator;
+package com.dean.started.actuator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
