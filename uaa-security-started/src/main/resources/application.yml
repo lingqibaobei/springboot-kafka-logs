@@ -1,0 +1,26 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: uaa-security-started
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:test}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:root}
+  jpa:
+    show-sql: true
+    properties:
+      #      hibernate.generate_statistics: true
+      hibernate.format_sql: true
+    hibernate:
+      ddl-auto: update
+      # 解决springboot2.x默认MyISAM的逻辑
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+## 指定Security配置类
+security:
+  started:
+    chapter:
+      create-user-detail
+
+
+
