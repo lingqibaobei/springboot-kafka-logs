@@ -21,6 +21,8 @@ public class SysUser {
 
     private String password;
 
+    private String mobile;
+
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<SysRole> roles;
 

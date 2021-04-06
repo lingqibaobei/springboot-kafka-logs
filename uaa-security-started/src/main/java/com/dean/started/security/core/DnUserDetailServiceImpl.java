@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -35,12 +36,8 @@ public class DnUserDetailServiceImpl implements UserDetailsService {
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		List<SysUser> byUsername = repo.findByUsername(username);
-		if(CollectionUtils.isEmpty(byUsername)) {
-			throw new UsernameNotFoundException("the username not found");
-		}
-		SysUser findByUsername = byUsername.get(0);
-		if (findByUsername == null) {
+		SysUser findByUsername = repo.findByUsername(username);
+		if(Objects.isNull(findByUsername)) {
 			throw new UsernameNotFoundException("the username not found");
 		}
 		AuthUser authUser = new AuthUser();

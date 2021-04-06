@@ -243,6 +243,8 @@ public class SysUser {
 
     private String password;
 
+    private String mobile;
+
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<SysRole> roles;
 
@@ -294,7 +296,7 @@ INSERT INTO `uaa`.`sys_role`(`id`, `role_name`) VALUES (2, 'ROLE_ADMIN');
 INSERT INTO `uaa`.`sys_role`(`id`, `role_name`) VALUES (3, 'ROLE_USER');
 
 -- 用户：password=123456,密文
-INSERT INTO `uaa`.`sys_user`(`id`, `password`, `username`) VALUES (1, '$2a$10$62ly2.TONU5KKmOY5mQUPeP2tuWjyt0.0SqujX6iWo6tEVMcUesxK', 'dean');
+INSERT INTO `uaa`.`sys_user`(`id`, `password`, `username`,`mobile`) VALUES (1, '$2a$10$62ly2.TONU5KKmOY5mQUPeP2tuWjyt0.0SqujX6iWo6tEVMcUesxK', 'dean','13111111111');
 
 INSERT INTO `uaa`.`sys_user_roles`(`sys_user_id`, `roles_id`) VALUES (1, 2);
 ```
@@ -313,6 +315,8 @@ public class AuthUser implements UserDetails {
     private String username;
 
     private String password;
+    
+    private String mobile;
 
     @Transient
     private List<SysRole> roles;
@@ -364,12 +368,8 @@ public class DnUserDetailServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		List<SysUser> byUsername = repo.findByUsername(username);
-		if(CollectionUtils.isEmpty(byUsername)) {
-			throw new UsernameNotFoundException("the username not found");
-		}
-		SysUser findByUsername = byUsername.get(0);
-		if (findByUsername == null) {
+		SysUser findByUsername = repo.findByUsername(username);
+		if(Objects.isNull(findByUsername)) {
 			throw new UsernameNotFoundException("the username not found");
 		}
 		AuthUser authUser = new AuthUser();
@@ -378,6 +378,7 @@ public class DnUserDetailServiceImpl implements UserDetailsService {
 	}
 
 }
+
 
 ```
 
@@ -452,13 +453,14 @@ security:
     ],
     "details": {
         "remoteAddress": "0:0:0:0:0:0:0:1",
-        "sessionId": "4B3CEBE1CF3EDF8A8082F35A28804B7E"
+        "sessionId": "F3650FE26A815736A692E719D044DEC1"
     },
     "authenticated": true,
     "principal": {
         "id": 1,
         "username": "dean",
         "password": "$2a$10$62ly2.TONU5KKmOY5mQUPeP2tuWjyt0.0SqujX6iWo6tEVMcUesxK",
+        "mobile": "13111111111",
         "roles": [
             {
                 "id": 2,

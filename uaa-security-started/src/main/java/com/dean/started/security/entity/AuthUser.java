@@ -25,6 +25,8 @@ public class AuthUser implements UserDetails {
 
     private String password;
 
+    private String mobile;
+
     @Transient
     private List<SysRole> roles;
 
