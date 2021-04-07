@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>登录</title>
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{css/signin.css}"/>
+</head>
+<body>
+<div class="container">
+    <form class="form-signin" th:action="@{/login/account}"
+          method="post">
+        <h2 class="form-signin-heading">手机验证码登录</h2>
+        <div th:if="${param.logout}" class="alert alert-warning" role="alert">已注销</div>
+        <div th:if="${param.error}" class="alert alert-danger" role="alert">手机验证码有误，请重试</div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="mobile" placeholder="手机号"/>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="captcha" placeholder="验证码"/>
+        </div>
+        <input type="submit" id="login" value="Sign in"
+               class="btn btn-lg btn-primary btn-block"/>
+    </form>
+</div>
+</body>
+</html>

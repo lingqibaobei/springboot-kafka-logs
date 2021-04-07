@@ -20,7 +20,7 @@ spring:
 security:
   started:
     chapter:
-      create-user-detail
+      create-auth-filter-provider
 
 
 

@@ -9,40 +9,35 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
- *
  * @author Dean
  * @date 2021-04-02
  */
 @Service
 public class DnUserDetailServiceImpl implements UserDetailsService {
 
-	private final SysUserRepo repo;
+    private final SysUserRepo repo;
 
-	@Autowired
-	public DnUserDetailServiceImpl(SysUserRepo repo) {
-		this.repo = repo;
-	}
+    @Autowired
+    public DnUserDetailServiceImpl(SysUserRepo repo) {
+        this.repo = repo;
+    }
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(String)
-	 */
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		SysUser findByUsername = repo.findByUsername(username);
-		if(Objects.isNull(findByUsername)) {
-			throw new UsernameNotFoundException("the username not found");
-		}
-		AuthUser authUser = new AuthUser();
-		BeanUtils.copyProperties(findByUsername, authUser);
-		return authUser;
-	}
+    @Override
+    public UserDetails loadUserByUsername(String uniqueKey) throws UsernameNotFoundException {
+        SysUser findOne = repo.findByUsername(uniqueKey);
+        if (Objects.isNull(findOne)) {
+            findOne = repo.findByMobile(uniqueKey);
+        }
+        if (Objects.isNull(findOne)) {
+            throw new UsernameNotFoundException("not found user:" + uniqueKey);
+        }
+        AuthUser authUser = new AuthUser();
+        BeanUtils.copyProperties(findOne, authUser);
+        return authUser;
+    }
 
 }

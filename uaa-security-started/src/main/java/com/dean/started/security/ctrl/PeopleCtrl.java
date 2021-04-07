@@ -16,8 +16,13 @@ public class PeopleCtrl {
      * 当前用户信息
      */
     @ResponseBody
-    @GetMapping("/user-info")
+    @GetMapping("/")
     public Object userInfo() {
         return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    @GetMapping("/mobile")
+    public String mobileLogin() {
+        return "mobile-login";
     }
 }

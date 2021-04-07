@@ -39,7 +39,7 @@ public class PeopleCtrl {
      * 当前用户信息
      */
     @ResponseBody
-    @GetMapping("/user-info")
+    @GetMapping("/")
     public Object userInfo() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
@@ -50,7 +50,7 @@ public class PeopleCtrl {
 ### 2.3 验证
 
 
-默认无需做其他配置，启动应用，请求指定的接口：`http://localhost:8080/user-info`
+默认无需做其他配置，启动应用，请求指定的接口：`http://localhost:8080/`
 `spring security`会检测用户是否登录，未登录，则会跳转到默认的登录页面；
 输入默认的用户名密码，即可登录
 
@@ -150,7 +150,7 @@ security:
 
 ## 4 验证
 
-启动应用，请求指定的接口：`http://localhost:8080/user-info`未登录，则会跳转到默认的登录页面；
+启动应用，请求指定的接口：`http://localhost:8080/`未登录，则会跳转到默认的登录页面；
 输入指定的用户名密码(`dean & 123456`)，即可登录,登录成功后，响应登录用户信息如下：
 
 ```json
@@ -441,7 +441,7 @@ security:
 
 ## 5 验证
 
-启动应用，请求指定的接口：`http://localhost:8080/user-info`未登录，则会跳转到默认的登录页面；
+启动应用，请求指定的接口：`http://localhost:8080/`未登录，则会跳转到默认的登录页面；
 输入指定的用户名密码(`dean & 123456`)，即可登录,登录成功后，响应登录用户信息如下：
 
 ```json
@@ -483,3 +483,48 @@ security:
 ```
 
 # chapter4 
+
+
+
+## 5 验证
+
+启动应用，请求指定的接口：`http://localhost:8080/`未登录，则会跳转到默认的登录页面；
+输入指定的用户名密码(`dean & 123456`)，即可登录,登录成功后，响应登录用户信息如下：
+
+```json
+{
+    "authorities": [
+        {
+            "authority": "ROLE_ADMIN"
+        }
+    ],
+    "details": {
+        "remoteAddress": "0:0:0:0:0:0:0:1",
+        "sessionId": "F3650FE26A815736A692E719D044DEC1"
+    },
+    "authenticated": true,
+    "principal": {
+        "id": 1,
+        "username": "dean",
+        "password": "$2a$10$62ly2.TONU5KKmOY5mQUPeP2tuWjyt0.0SqujX6iWo6tEVMcUesxK",
+        "mobile": "13111111111",
+        "roles": [
+            {
+                "id": 2,
+                "roleName": "ROLE_ADMIN"
+            }
+        ],
+        "enabled": true,
+        "authorities": [
+            {
+                "authority": "ROLE_ADMIN"
+            }
+        ],
+        "accountNonExpired": true,
+        "accountNonLocked": true,
+        "credentialsNonExpired": true
+    },
+    "credentials": null,
+    "name": "dean"
+}
+```
