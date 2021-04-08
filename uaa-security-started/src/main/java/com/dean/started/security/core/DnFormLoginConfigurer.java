@@ -20,7 +20,7 @@ public class DnFormLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
         AbstractAuthenticationFilterConfigurer<H, DnFormLoginConfigurer<H>, DnMobileAuthenticationFilter> {
 
     public DnFormLoginConfigurer() {
-        super(new DnMobileAuthenticationFilter(), DnMobileAuthenticationFilter.DEFAULT_PATTERN);
+        super(new DnMobileAuthenticationFilter(), AuthConstants.DEFAULT_MOBILE_LOGIN);
         usernameParameter("username");
         passwordParameter("password");
     }
@@ -82,9 +82,8 @@ public class DnFormLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
      * performing authentication
      * @return the {@link FormLoginConfigurer} for additional customization
      */
-    public DnFormLoginConfigurer<H> passwordParameter(String passwordParameter) {
+    public void passwordParameter(String passwordParameter) {
         getAuthenticationFilter().setPasswordParameter(passwordParameter);
-        return this;
     }
 
     /**
@@ -95,8 +94,7 @@ public class DnFormLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
      * performing authentication
      * @return the {@link FormLoginConfigurer} for additional customization
      */
-    public DnFormLoginConfigurer<H> usernameParameter(String usernameParameter) {
+    public void usernameParameter(String usernameParameter) {
         getAuthenticationFilter().setAccountParameter(usernameParameter);
-        return this;
     }
 }

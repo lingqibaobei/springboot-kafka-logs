@@ -25,8 +25,7 @@ public class DnMobileAuthenticationFilter extends AbstractAuthenticationProcessi
 
     private static final String SPRING_SECURITY_FORM_USERNAME_KEY = "mobile";
     private static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "captcha";
-    public static final String DEFAULT_PATTERN = "/login/account";
-    public static final String DEFAULT_LOGIN_PAGE = "/mobile";
+
 
     @Setter
     @Getter
@@ -39,13 +38,12 @@ public class DnMobileAuthenticationFilter extends AbstractAuthenticationProcessi
     private boolean postOnly = true;
 
     @Setter
-    private AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler(DEFAULT_LOGIN_PAGE + "?error");
+    private AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler(AuthConstants.DEFAULT_MOBILE_LOGIN_ERROR_PAGE);
 
     public DnMobileAuthenticationFilter() {
-        super(new AntPathRequestMatcher(DEFAULT_PATTERN, HttpMethod.POST.name()));
+        super(new AntPathRequestMatcher(AuthConstants.DEFAULT_MOBILE_LOGIN, HttpMethod.POST.name()));
         // 登录失败的处理逻辑
         super.setAuthenticationFailureHandler(failureHandler);
-
     }
 
 

@@ -1,22 +1,22 @@
 package com.dean.started.security.config;
 
-import com.dean.started.security.core.AuthConstants;
-import com.dean.started.security.core.DnMobileAuthenticationFilter;
-import com.dean.started.security.core.DnMobileAuthenticationProvider;
-import com.dean.started.security.core.DnUserDetailServiceImpl;
+import com.dean.started.security.core.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Dean
@@ -24,8 +24,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
  */
 @Configuration
 @EnableWebSecurity
-@ConditionalOnProperty(name = "security.started.chapter", havingValue = "create-auth-filter-provider", matchIfMissing = false)
-public class WebSecurityConfigForCreateAuthFilterAndProvider extends WebSecurityConfigurerAdapter {
+@ConditionalOnProperty(name = "security.started.chapter", havingValue = "create-entry-point", matchIfMissing = false)
+public class WebSecurityConfigForCreateEntryPoint extends WebSecurityConfigurerAdapter {
 
     private final DnUserDetailServiceImpl userDetailsService;
 
@@ -35,13 +35,8 @@ public class WebSecurityConfigForCreateAuthFilterAndProvider extends WebSecurity
     }
 
     @Autowired
-    public WebSecurityConfigForCreateAuthFilterAndProvider(DnUserDetailServiceImpl userDetailsService) {
+    public WebSecurityConfigForCreateEntryPoint(DnUserDetailServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/css/**", "/js/**", "*.html", "/favicon.ico");
     }
 
     private DnMobileAuthenticationFilter dnAccountPwdAuthenticationFilter(AuthenticationManager manager) {
@@ -50,8 +45,24 @@ public class WebSecurityConfigForCreateAuthFilterAndProvider extends WebSecurity
         return filter;
     }
 
+    private DnAuthenticationEntryPoint dnAuthenticationEntryPoint() {
+        DnAuthenticationEntryPoint authEntryPoint =
+                new DnAuthenticationEntryPoint(AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE,AuthConstants.IGNORE_PATTERN);
+        Map<String, String> pointMap = new LinkedHashMap<>();
+        pointMap.put("/mobile/**", AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE);
+        pointMap.put("/user/**", AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE);
+        authEntryPoint.setAuthPointMap(pointMap);
+        return authEntryPoint;
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // 系统提供的
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        auth.authenticationProvider(authenticationProvider);
+        // 自定义
         auth.authenticationProvider(new DnMobileAuthenticationProvider(userDetailsService, passwordEncoder()));
     }
 
@@ -60,11 +71,16 @@ public class WebSecurityConfigForCreateAuthFilterAndProvider extends WebSecurity
         // @formatter:off
         http.httpBasic()
                 .and().authorizeRequests()
-                .antMatchers(AuthConstants.DEFAULT_MOBILE_LOGIN, AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE).permitAll()
+                .antMatchers(AuthConstants.IGNORE_PATTERN).permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin()
+                        .loginPage(AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE)
+                        .loginProcessingUrl(AuthConstants.DEFAULT_ACCOUNT_LOGIN)
+                        .permitAll()
                 .and().addFilterBefore(dnAccountPwdAuthenticationFilter(
-                super.authenticationManagerBean()), BasicAuthenticationFilter.class)
+                        super.authenticationManagerBean()),
+                        BasicAuthenticationFilter.class)
+                .exceptionHandling().authenticationEntryPoint(dnAuthenticationEntryPoint()).and()
                 .csrf().disable();
         // @formatter:on
 

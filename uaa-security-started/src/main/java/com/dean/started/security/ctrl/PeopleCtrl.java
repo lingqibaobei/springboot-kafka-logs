@@ -25,4 +25,9 @@ public class PeopleCtrl {
     public String mobileLogin() {
         return "mobile-login";
     }
+
+    @GetMapping("/account")
+    public String accountLogin() {
+        return "account-login";
+    }
 }

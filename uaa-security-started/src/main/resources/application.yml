@@ -20,7 +20,7 @@ spring:
 security:
   started:
     chapter:
-      create-auth-filter-provider
+      create-entry-point
 
 
 
