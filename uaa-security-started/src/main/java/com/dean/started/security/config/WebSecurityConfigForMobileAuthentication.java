@@ -24,8 +24,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
  */
 @Configuration
 @EnableWebSecurity
-@ConditionalOnProperty(name = "security.started.chapter", havingValue = "create-auth-filter-provider", matchIfMissing = false)
-public class WebSecurityConfigForCreateAuthFilterAndProvider extends WebSecurityConfigurerAdapter {
+@ConditionalOnProperty(name = "security.started.chapter", havingValue = "mobile-authentication", matchIfMissing = false)
+public class WebSecurityConfigForMobileAuthentication extends WebSecurityConfigurerAdapter {
 
     private final DnUserDetailServiceImpl userDetailsService;
 
@@ -35,7 +35,7 @@ public class WebSecurityConfigForCreateAuthFilterAndProvider extends WebSecurity
     }
 
     @Autowired
-    public WebSecurityConfigForCreateAuthFilterAndProvider(DnUserDetailServiceImpl userDetailsService) {
+    public WebSecurityConfigForMobileAuthentication(DnUserDetailServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -52,7 +52,7 @@ public class WebSecurityConfigForCreateAuthFilterAndProvider extends WebSecurity
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(new DnMobileAuthenticationProvider(userDetailsService, passwordEncoder()));
+        auth.authenticationProvider(new DnMobileAuthenticationProvider(userDetailsService));
     }
 
     @Override

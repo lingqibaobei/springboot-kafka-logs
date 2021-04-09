@@ -88,13 +88,13 @@ Using generated security password: 53d8b573-3c71-4988-9153-71b2a717439f
 并将其随机生成的密码记录到控制台
 
 
-# chapter2 实现自定义用户名(内存)
+# chapter2 基于内存的用户认证
 
 
 ## 1 实现目标
 
 > 添加如下配置，实现: 
-**基于内存创建一个用户名为`dean`,密码为`123456`，角色为`_DN_USER`的用户**
+**基于内存创建一个用户名为`dean`,密码为`123456`，角色为`ADMIN`的用户**
 注意： **.and().formLogin()** 启用默认的登录表单页面
 
 
@@ -117,7 +117,7 @@ public class WebSecurityConfigByMemory extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(new BCryptPasswordEncoder())
                 .withUser("dean")
                 .password(new BCryptPasswordEncoder().encode("123456"))
-                .roles("_DN_USER");
+                .roles("ADMIN");
     }
 
     @Override
@@ -183,8 +183,7 @@ security:
 }
 ```
 
-
-# chapter3 实现自定义用户(MySQL)
+# chapter3 基于数据库的用户认证
 
 ## 1 引入MySQL,JPA
 
@@ -482,8 +481,104 @@ security:
 }
 ```
 
-# chapter4 
+# chapter4 自定义手机号验证码登录
 
+## 设计规划
+
+> 默认的用户密码验证流程如下:
+![username-password-auth](/asset/img/security/user-pwd-auth.jpg)
+
+
+> 参照上述流程，设计手机号验证码的验证流程
+![mobile-captcha-auth](/asset/img/security/mobile-captcha-auth.jpg)
+
+## 实现
+
+### 1 自定义`DnMobileReqToken`
+
+> 指定手机验证码认证登录需要的字段，示例：**mobile & captcha**字段
+```java
+public class DnMobileReqToken extends AbstractAuthenticationToken {
+
+    private final String mobile;
+
+    private final String captcha;
+
+    public DnMobileReqToken(final String mobile, final String captcha) {
+        super(null);
+        this.mobile = mobile;
+        this.captcha = captcha;
+        setAuthenticated(false);
+    }
+
+    @Override
+    public Object getCredentials() {
+        return captcha;
+    }
+
+    @Override
+    public Object getPrincipal() {
+        return mobile;
+    }
+
+}
+```
+
+### 2 自定义`DnMobileAuthenticationFilter`
+
+> 主要逻辑：1 匹配登录路径`AuthConstants.DEFAULT_MOBILE_LOGIN`,拦截到该路径后执行该Filter,示例的路径为`/mobile`<br>
+2 校验登录请求参数，封装`DnMobileReqToken`请求参数，后续交给`AuthenticationManager`
+
+```java
+public class DnMobileAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+
+    private static final String SPRING_SECURITY_FORM_USERNAME_KEY = "mobile";
+    private static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "captcha";
+
+
+    @Setter
+    @Getter
+    private String accountParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
+    @Setter
+    @Getter
+    private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
+    @Setter
+    @Getter
+    private boolean postOnly = true;
+
+    @Setter
+    private AuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler(AuthConstants.DEFAULT_MOBILE_LOGIN_ERROR_PAGE);
+
+    public DnMobileAuthenticationFilter() {
+        super(new AntPathRequestMatcher(AuthConstants.DEFAULT_MOBILE_LOGIN, HttpMethod.POST.name()));
+        // 登录失败的处理逻辑
+        super.setAuthenticationFailureHandler(failureHandler);
+    }
+
+
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException, IOException, ServletException {
+        if (postOnly && !request.getMethod().equals(HttpMethod.POST.name())) {
+            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+        }
+        String mobile = request.getParameter(accountParameter);
+        String captcha = request.getParameter(passwordParameter);
+        if (mobile == null) {
+            throw new AuthenticationServiceException("mobile must not null");
+        }
+        if (captcha == null) {
+            throw new AuthenticationServiceException("captcha must not null");
+        }
+        DnMobileReqToken reqToken = new DnMobileReqToken(mobile, captcha);
+        reqToken.setDetails(authenticationDetailsSource.buildDetails(request));
+        return getAuthenticationManager().authenticate(reqToken);
+    }
+}
+
+```
+
+### 3 自定义`DnMobileAuthenticationFilter`
 
 
 ## 5 验证

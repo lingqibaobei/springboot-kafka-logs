@@ -63,7 +63,7 @@ public class WebSecurityConfigForLogoutProcess extends WebSecurityConfigurerAdap
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         auth.authenticationProvider(authenticationProvider);
         // 自定义
-        auth.authenticationProvider(new DnMobileAuthenticationProvider(userDetailsService, passwordEncoder()));
+        auth.authenticationProvider(new DnMobileAuthenticationProvider(userDetailsService));
     }
 
     @Override

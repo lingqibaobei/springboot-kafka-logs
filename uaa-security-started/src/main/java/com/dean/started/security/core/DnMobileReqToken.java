@@ -4,7 +4,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 
 /**
- * 自定义账户密码Token
+ * 自定义手机验证码token
  *
  * @author Dean
  * @date 2021-04-06

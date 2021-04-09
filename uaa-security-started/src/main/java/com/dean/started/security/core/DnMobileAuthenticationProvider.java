@@ -1,19 +1,15 @@
 package com.dean.started.security.core;
 
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 /**
  * @author Dean
@@ -23,11 +19,9 @@ import org.springframework.util.StringUtils;
 public class DnMobileAuthenticationProvider implements AuthenticationProvider, InitializingBean {
 
     private final DnUserDetailServiceImpl userServices;
-    private final PasswordEncoder passwordEncoder;
 
-    public DnMobileAuthenticationProvider(DnUserDetailServiceImpl userServices, PasswordEncoder passwordEncoder) {
+    public DnMobileAuthenticationProvider(DnUserDetailServiceImpl userServices) {
         this.userServices = userServices;
-        this.passwordEncoder = passwordEncoder;
     }
 
 
