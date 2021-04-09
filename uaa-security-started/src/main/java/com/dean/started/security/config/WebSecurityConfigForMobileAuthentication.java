@@ -62,7 +62,6 @@ public class WebSecurityConfigForMobileAuthentication extends WebSecurityConfigu
                 .and().authorizeRequests()
                 .antMatchers(AuthConstants.DEFAULT_MOBILE_LOGIN, AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE).permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin()
                 .and().addFilterBefore(dnAccountPwdAuthenticationFilter(
                 super.authenticationManagerBean()), BasicAuthenticationFilter.class)
                 .csrf().disable();

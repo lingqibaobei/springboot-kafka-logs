@@ -20,7 +20,7 @@ spring:
 security:
   started:
     chapter:
-      create-entry-point
+      mobile-authentication
 
 
 

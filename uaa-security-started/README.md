@@ -578,7 +578,49 @@ public class DnMobileAuthenticationFilter extends AbstractAuthenticationProcessi
 
 ```
 
-### 3 自定义`DnMobileAuthenticationFilter`
+### 3 自定义`DnMobileAuthenticationProvider`
+
+> 过滤器拦截后会调用`AuthenticationManager`，`ProviderManager`委托给`AuthenticationProvider`去认证<br>
+1 根据`supports`方法匹配是否处理对应的请求，主要逻辑调用`UserDetailsService`加载用户到安全框架<br>
+2 加载成功后，封装`Authentication`对象，认证成功后放入`SecurityContextHolder`
+
+```java
+public class DnMobileAuthenticationProvider implements AuthenticationProvider {
+
+    private final DnUserDetailServiceImpl userServices;
+
+    public DnMobileAuthenticationProvider(DnUserDetailServiceImpl userServices) {
+        this.userServices = userServices;
+    }
+
+
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        String mobile = (String) authentication.getPrincipal();
+        UserDetails userDetails = null;
+        try {
+            userDetails = userServices.loadUserByUsername(mobile);
+        } catch (UsernameNotFoundException e) {
+            throw new BadCredentialsException("账户不存在");
+        }
+        // TODO 验证captcha
+        return createSuccessAuthentication(userDetails);
+    }
+
+
+    private Authentication createSuccessAuthentication(UserDetails userDetails) {
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
+                userDetails.getPassword(), userDetails.getAuthorities());
+        token.setDetails(userDetails);
+        return token;
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return DnMobileReqToken.class.isAssignableFrom(authentication);
+    }
+}
+```
 
 
 ## 5 验证
