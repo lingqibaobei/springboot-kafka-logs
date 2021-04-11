@@ -25,7 +25,9 @@
     <artifactId>spring-boot-starter-security</artifactId>
 </dependency>
 ```
-### 2.2 提供一个获取登录用户信息接口(示例用)
+### 2.2 PeopleCtrl示例接口
+
+>  提供一个获取登录用户信息接口(示例用)，当登录成功，跳转到该接口
 
 ```java
 /**
@@ -93,12 +95,13 @@ Using generated security password: 53d8b573-3c71-4988-9153-71b2a717439f
 
 ## 1 实现目标
 
-> 添加如下配置，实现: 
+> 实现: 
 **基于内存创建一个用户名为`dean`,密码为`123456`，角色为`ADMIN`的用户**
-注意： **.and().formLogin()** 启用默认的登录表单页面
 
 
 ## 2 添加配置类
+> 注意： **.and().formLogin()** 启用默认的登录表单页面
+
 ```java
 /**
  * @author Dean
@@ -481,7 +484,8 @@ security:
 }
 ```
 
-# chapter4 自定义手机号验证码登录
+
+# chapter4 自定义手机号验证码登录1
 
 ## 设计规划
 
@@ -492,7 +496,93 @@ security:
 > 参照上述流程，设计手机号验证码的验证流程
 ![mobile-captcha-auth](/asset/img/security/mobile-captcha-auth.jpg)
 
-## 实现
+## 创建登录页面
+
+> **第一阶段先创建一个基于手机号验证码登录的H5页面**
+
+### 1 MAVEN依赖补充
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+```
+### 2 创建页面
+
+> 在`resources/templates/mobile-login.html` 创建手机号验证码的登录页面<br>注意css的依赖:`static/css`目录下
+
+```
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>登录</title>
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{css/signin.css}"/>
+</head>
+<body>
+<div class="container">
+    <form class="form-signin" th:action="@{/login/mobile}"
+          method="post">
+        <h2 class="form-signin-heading">手机验证码登录</h2>
+        <div th:if="${param.logout}" class="alert alert-warning" role="alert">已注销</div>
+        <div th:if="${param.error}" class="alert alert-danger" role="alert">手机验证码有误，请重试</div>
+        <div class="form-group">
+            <input type="tel" required maxlength="11" class="form-control" name="mobile" placeholder="手机号"/>
+        </div>
+        <div class="form-group">
+            <input type="text" required class="form-control" name="captcha" placeholder="验证码"/>
+        </div>
+        <input type="submit" id="login" value="Sign in"
+               class="btn btn-lg btn-primary btn-block"/>
+    </form>
+</div>
+</body>
+</html>
+```
+创建完页面，添加一下MVC的映射配置：
+
+> 在之前的PeopleCtrl类添加一天接口，指向`mobile-login.html`的视图<be>
+注意：PeopleCtrl的注解用的是`@Controller`，`@RestController`默认会对接口补充`@ResponseBody`
+
+```
+@GetMapping("/mobile")
+public String mobileLogin() {
+    return "mobile-login";
+}
+```
+
+> [!TIP] 总结页面的功能，创建一个表单提交，主要信息：
+**`/mobile`页面URL，`/login/mobile`登录接口，`mobile&captcha`字段，`POST`请求方式；**
+
+**常量信息**
+
+```java
+public interface AuthConstants {
+    String DEFAULT_MOBILE_LOGIN = "/login/mobile";
+    String DEFAULT_MOBILE_LOGIN_PAGE = "/mobile";
+    String DEFAULT_MOBILE_LOGIN_ERROR_PAGE = "/mobile?error";
+}
+```
+
+### 3 更改安全配置类
+
+> 添加对`/mobile`登录页面和`/login/mobile`登录接口的允许访问；移除`formLogin()`的配置
+
+```
+.antMatchers(AuthConstants.DEFAULT_MOBILE_LOGIN, AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE).permitAll()
+```
+
+浏览器器访问`http://localhost:8080/mobile` 验证页面是否可以请求，页面可以访问后，下一篇开始实现登录的功能
+
+
+# chapter4 自定义手机号验证码登录2
+
+
+## 配置登录逻辑
+
+> **这一阶段，添加配置处理手机号验证码的登录逻辑，按照之前的设计规划图进行如下的流程**：
 
 ### 1 自定义`DnMobileReqToken`
 
@@ -524,9 +614,12 @@ public class DnMobileReqToken extends AbstractAuthenticationToken {
 }
 ```
 
+
 ### 2 自定义`DnMobileAuthenticationFilter`
 
-> 主要逻辑：1 匹配登录路径`AuthConstants.DEFAULT_MOBILE_LOGIN`,拦截到该路径后执行该Filter,示例的路径为`/mobile`<br>
+
+> **主要逻辑**：<br>
+1 匹配登录路径`AuthConstants.DEFAULT_MOBILE_LOGIN`,拦截到该路径后执行该Filter,示例的路径为`/login/mobile`<br>
 2 校验登录请求参数，封装`DnMobileReqToken`请求参数，后续交给`AuthenticationManager`
 
 ```java
@@ -551,7 +644,7 @@ public class DnMobileAuthenticationFilter extends AbstractAuthenticationProcessi
 
     public DnMobileAuthenticationFilter() {
         super(new AntPathRequestMatcher(AuthConstants.DEFAULT_MOBILE_LOGIN, HttpMethod.POST.name()));
-        // 登录失败的处理逻辑
+        // 登录失败的处理逻辑: 失败后跳转失败页面 AuthConstants.DEFAULT_MOBILE_LOGIN_ERROR_PAGE
         super.setAuthenticationFailureHandler(failureHandler);
     }
 
@@ -559,9 +652,11 @@ public class DnMobileAuthenticationFilter extends AbstractAuthenticationProcessi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
+        // 验证请求方式： 是否是仅支持POST
         if (postOnly && !request.getMethod().equals(HttpMethod.POST.name())) {
             throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
+        // 验证请求参数
         String mobile = request.getParameter(accountParameter);
         String captcha = request.getParameter(passwordParameter);
         if (mobile == null) {
@@ -570,6 +665,7 @@ public class DnMobileAuthenticationFilter extends AbstractAuthenticationProcessi
         if (captcha == null) {
             throw new AuthenticationServiceException("captcha must not null");
         }
+        // 封装请求对象
         DnMobileReqToken reqToken = new DnMobileReqToken(mobile, captcha);
         reqToken.setDetails(authenticationDetailsSource.buildDetails(request));
         return getAuthenticationManager().authenticate(reqToken);
@@ -580,7 +676,7 @@ public class DnMobileAuthenticationFilter extends AbstractAuthenticationProcessi
 
 ### 3 自定义`DnMobileAuthenticationProvider`
 
-> 过滤器拦截后会调用`AuthenticationManager`，`ProviderManager`委托给`AuthenticationProvider`去认证<br>
+> **过滤器拦截后会调用`ProviderManager`委托给`AuthenticationProvider`列表做身份认证**<br>
 1 根据`supports`方法匹配是否处理对应的请求，主要逻辑调用`UserDetailsService`加载用户到安全框架<br>
 2 加载成功后，封装`Authentication`对象，认证成功后放入`SecurityContextHolder`
 
@@ -607,7 +703,9 @@ public class DnMobileAuthenticationProvider implements AuthenticationProvider {
         return createSuccessAuthentication(userDetails);
     }
 
-
+    /**
+     * 成功后构建`Authentication`
+     */
     private Authentication createSuccessAuthentication(UserDetails userDetails) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
                 userDetails.getPassword(), userDetails.getAuthorities());
@@ -622,11 +720,101 @@ public class DnMobileAuthenticationProvider implements AuthenticationProvider {
 }
 ```
 
+### 4 更改安全配置类
 
-## 5 验证
 
-启动应用，请求指定的接口：`http://localhost:8080/`未登录，则会跳转到默认的登录页面；
-输入指定的用户名密码(`dean & 123456`)，即可登录,登录成功后，响应登录用户信息如下：
+> **把自定义Provider和Filter配置到SecurityConfig中**
+
+**配置`DnMobileAuthenticationProvider`**
+
+```
+@Override
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.authenticationProvider(new DnMobileAuthenticationProvider(userDetailsService));
+}
+```
+
+**配置`DnMobileAuthenticationFilter`**
+
+```
+private DnMobileAuthenticationFilter dnAccountPwdAuthenticationFilter(AuthenticationManager manager) {
+    DnMobileAuthenticationFilter filter = new DnMobileAuthenticationFilter();
+    filter.setAuthenticationManager(manager);
+    return filter;
+}
+
+ 
+.and().addFilterBefore(dnAccountPwdAuthenticationFilter(
+                super.authenticationManagerBean()), BasicAuthenticationFilter.class)
+```
+
+**完整配置**
+
+```java
+
+@Configuration
+@EnableWebSecurity
+@ConditionalOnProperty(name = "security.started.chapter", havingValue = "mobile-authentication", matchIfMissing = false)
+public class WebSecurityConfigForMobileAuthentication extends WebSecurityConfigurerAdapter {
+
+    private final DnUserDetailServiceImpl userDetailsService;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Autowired
+    public WebSecurityConfigForMobileAuthentication(DnUserDetailServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/css/**", "/js/**", "*.html", "/favicon.ico");
+    }
+
+    private DnMobileAuthenticationFilter dnAccountPwdAuthenticationFilter(AuthenticationManager manager) {
+        DnMobileAuthenticationFilter filter = new DnMobileAuthenticationFilter();
+        filter.setAuthenticationManager(manager);
+        return filter;
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(new DnMobileAuthenticationProvider(userDetailsService));
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
+        http.httpBasic()
+                .and().authorizeRequests()
+                .antMatchers(AuthConstants.DEFAULT_MOBILE_LOGIN, AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE).permitAll()
+                .anyRequest().authenticated()
+                .and().addFilterBefore(dnAccountPwdAuthenticationFilter(
+                super.authenticationManagerBean()), BasicAuthenticationFilter.class)
+                .csrf().disable();
+        // @formatter:on
+
+    }
+}
+
+```
+
+> 添加如下配置,使安全配置类的生效：
+
+```yaml
+security:
+  started:
+    chapter:
+      mobile-authentication
+```
+
+### 5 验证
+
+> 此时，在浏览器器访问`http://localhost:8080/mobile`手机号验证码登录页面，
+输入指定的手机号验证码(`13111111111 & 验证码TODO，随意输入`)，即可登录,登录成功后，跳转到`/`接口，获取登录用户信息如下：
 
 ```json
 {
@@ -665,3 +853,6 @@ public class DnMobileAuthenticationProvider implements AuthenticationProvider {
     "name": "dean"
 }
 ```
+> [!TIP] **Congratulation！至此你已经实现了自定义的手机号验证码登录；**<br>
+此示例只做了手机号验证码登录，你可能会疑问，是否可以账户密码登录和手机验证码登录并存呢？
+**当然可以，甚至可以实现：指定哪些规则的请求用账户密码登录，哪些规则的请求用手机号验证码登录**下一篇就来实践一下
