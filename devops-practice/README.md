@@ -66,4 +66,4 @@ Container容器监控 | ||✅|[container-monitor](http://47.103.88.209:3000/d/p6
 > docker部署与传统部署的区别
 ![docker部署与传统部署的区别](static/dn-docker-cicd-compare.jpg)
 
-
+## see more details : [博客链接](http://know.himygirl.cn/devops/)
