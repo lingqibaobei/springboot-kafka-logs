@@ -20,7 +20,7 @@ spring:
 security:
   started:
     chapter:
-      mobile-authentication
+      logout-process
 
 
 

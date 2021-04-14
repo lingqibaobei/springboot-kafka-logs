@@ -89,7 +89,6 @@ Using generated security password: 53d8b573-3c71-4988-9153-71b2a717439f
 (保护应用程序URL，验证提交的用户名和密码，重定向到登录表单等)`UserDetailsService`创建一个`user`的用户，
 并将其随机生成的密码记录到控制台
 
-
 # chapter2 基于内存的用户认证
 
 
@@ -484,7 +483,6 @@ security:
 }
 ```
 
-
 # chapter4 自定义手机号验证码登录1
 
 ## 设计规划
@@ -575,7 +573,6 @@ public interface AuthConstants {
 ```
 
 浏览器器访问`http://localhost:8080/mobile` 验证页面是否可以请求，页面可以访问后，下一篇开始实现登录的功能
-
 
 # chapter4 自定义手机号验证码登录2
 
@@ -856,3 +853,506 @@ security:
 > [!TIP] **Congratulation！至此你已经实现了自定义的手机号验证码登录；**<br>
 此示例只做了手机号验证码登录，你可能会疑问，是否可以账户密码登录和手机验证码登录并存呢？
 **当然可以，甚至可以实现：指定哪些规则的请求用账户密码登录，哪些规则的请求用手机号验证码登录**下一篇就来实践一下
+
+# chapter5 实现多身份认证
+
+> 本篇目标实现： **<br>`/user/**`匹配的请求路径，自动跳转到用户名密码认证<br>`/mobile/**`匹配的请求路径，自动跳转到手机号验证码认证**
+
+## 1 调整授权的常量类
+
+```java
+public interface AuthConstants {
+   String DEFAULT_MOBILE_LOGIN = "/login/mobile";
+   String DEFAULT_MOBILE_LOGIN_PAGE = "/mobile";
+   String DEFAULT_MOBILE_LOGIN_ERROR_PAGE = "/mobile?error";
+ 
+   String DEFAULT_ACCOUNT_LOGIN = "/login";
+   String DEFAULT_ACCOUNT_LOGIN_PAGE = "/account";
+   String DEFAULT_ACCOUNT_LOGIN_ERROR_PAGE = "/account?error";
+   
+   String[] IGNORE_PATTERN = new String[]{
+               "/error",
+               AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE,
+               AuthConstants.DEFAULT_ACCOUNT_LOGIN,
+               AuthConstants.DEFAULT_ACCOUNT_LOGIN_ERROR_PAGE,
+               AuthConstants.DEFAULT_MOBILE_LOGIN,
+               AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE,
+               AuthConstants.DEFAULT_MOBILE_LOGIN_ERROR_PAGE
+       };
+}
+```
+
+## 2 自定义EntryPoint实现
+
+> [!TIP] **继承`LoginUrlAuthenticationEntryPoint`重写`determineUrlToUseForThisRequest`方法**，注意：<br>
+1 如果请求路径与AuthPoint路径一致，忽略不重定向，否则会循环重定向.<br>
+例如：当前请求`/mobile`与登录路径`/mobile`一致,此时直接返回，不应再重定向到 loginFormUrl的`/mobile`<br>
+2 提供**String[] ignorePattern**忽略配置的选项
+
+```java
+public class DnAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
+
+    private String[] ignorePattern;
+
+    public DnAuthenticationEntryPoint(String loginFormUrl, String[] ignorePattern) {
+        super(loginFormUrl);
+        this.ignorePattern = ignorePattern;
+    }
+
+    /**
+     * 配置请求路径返回不同的登录页路径
+     */
+    @Setter
+    @Getter
+    private Map<String, String> authPointMap = Collections.emptyMap();
+
+    /**
+     * AntPathRequestMatcher可以实现路径的匹配工作
+     */
+    @Setter
+    @Getter
+    private PathMatcher pathMatcher = new AntPathMatcher();
+
+
+    @Override
+    protected String determineUrlToUseForThisRequest(HttpServletRequest request, HttpServletResponse response,
+                                                     AuthenticationException exception) {
+        String reqUri = request.getRequestURI().replaceAll(request.getContextPath(), "");
+        // as the same to the auth point ignore
+        if (this.authPointMap.values().contains(reqUri)) {
+            return reqUri;
+        }
+        // ignore pattern
+        if (Objects.nonNull(ignorePattern)) {
+            for (String s : ignorePattern) {
+                if (this.pathMatcher.match(s, reqUri)) {
+                    return reqUri;
+                }
+            }
+        }
+
+        // match auth point
+        for (String pattern : this.authPointMap.keySet()) {
+            if (this.pathMatcher.match(pattern, reqUri)) {
+                return this.authPointMap.get(pattern);
+            }
+        }
+        // redirect default loginFormUrl
+        return super.determineUrlToUseForThisRequest(request, response, exception);
+    }
+
+}
+
+```
+
+
+
+## 3 提供账户密码登录页面
+
+> [!WARNING] **还记得上篇自定义的手机号验证码的登录页面吗？这里我没有才有默认的账户登录页面，也定义了登录页面，并修改了登录地址**
+
+### 3.1 补充账户密码登录页面
+
+**修改PeopleCtrl**
+
+```
+@GetMapping("/account")
+public String accountLogin() {
+    return "account-login";
+}
+```
+
+**补充页面`templates/account-login.html`**
+
+```html
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>登录</title>
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{css/signin.css}"/>
+</head>
+<body>
+<div class="container">
+    <form class="form-signin" th:action="@{/login}"
+          method="post">
+        <h2 class="form-signin-heading">账户密码登录</h2>
+        <div th:if="${param.logout}" class="alert alert-warning" role="alert">已注销</div>
+        <div th:if="${param.error}" class="alert alert-danger" role="alert">账户密码有误，请重试</div>
+        <div class="form-group">
+            <input type="text" class="form-control" required id="username" name="username" placeholder="username"/>
+        </div>
+        <div class="form-group">
+            <input type="password" required class="form-control" id="password" name="password" placeholder="password"/>
+        </div>
+        <input type="submit" id="login" value="Sign in"
+               class="btn btn-lg btn-primary btn-block"/>
+    </form>
+</div>
+</body>
+</html>
+```
+
+
+## 4 更改安全配置类
+
+> **把上面自定义的`DnAuthenticationEntryPoint`设定到安全配置中**，如下：<br>
+**`.exceptionHandling().authenticationEntryPoint(dnAuthenticationEntryPoint())`**
+
+```
+private DnAuthenticationEntryPoint dnAuthenticationEntryPoint() {
+        DnAuthenticationEntryPoint authEntryPoint =
+                new DnAuthenticationEntryPoint(AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE,AuthConstants.IGNORE_PATTERN);
+        Map<String, String> pointMap = new LinkedHashMap<>();
+        pointMap.put("/mobile/**", AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE);
+        pointMap.put("/user/**", AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE);
+        authEntryPoint.setAuthPointMap(pointMap);
+        return authEntryPoint;
+    }
+```
+
+
+> **上篇自定义Provider会把默认的DaoAuthenticationProvider,这边手动注入**
+
+```
+@Override
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    // 系统提供的
+    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+    authenticationProvider.setUserDetailsService(userDetailsService);
+    authenticationProvider.setPasswordEncoder(passwordEncoder());
+    auth.authenticationProvider(authenticationProvider);
+    // 自定义
+    auth.authenticationProvider(new DnMobileAuthenticationProvider(userDetailsService));
+}
+```
+
+> **优化忽略路径的处理**
+```
+.antMatchers(AuthConstants.IGNORE_PATTERN).permitAll()
+```
+
+> **重新启动表单提交**
+
+```
+.and().formLogin()
+        .loginPage(AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE)
+        .loginProcessingUrl(AuthConstants.DEFAULT_ACCOUNT_LOGIN)
+        .permitAll()
+```
+
+
+### 4.1 完整配置如下：
+
+```java
+@Configuration
+@EnableWebSecurity
+@ConditionalOnProperty(name = "security.started.chapter", havingValue = "create-entry-point", matchIfMissing = false)
+public class WebSecurityConfigForCreateEntryPoint extends WebSecurityConfigurerAdapter {
+
+    private final DnUserDetailServiceImpl userDetailsService;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Autowired
+    public WebSecurityConfigForCreateEntryPoint(DnUserDetailServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+    
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/css/**", "/js/**", "*.html", "/favicon.ico");
+    }
+
+    private DnMobileAuthenticationFilter dnAccountPwdAuthenticationFilter(AuthenticationManager manager) {
+        DnMobileAuthenticationFilter filter = new DnMobileAuthenticationFilter();
+        filter.setAuthenticationManager(manager);
+        return filter;
+    }
+
+    private DnAuthenticationEntryPoint dnAuthenticationEntryPoint() {
+        DnAuthenticationEntryPoint authEntryPoint =
+                new DnAuthenticationEntryPoint(AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE,AuthConstants.IGNORE_PATTERN);
+        Map<String, String> pointMap = new LinkedHashMap<>();
+        pointMap.put("/mobile/**", AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE);
+        pointMap.put("/user/**", AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE);
+        authEntryPoint.setAuthPointMap(pointMap);
+        return authEntryPoint;
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // 系统提供的
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        auth.authenticationProvider(authenticationProvider);
+        // 自定义
+        auth.authenticationProvider(new DnMobileAuthenticationProvider(userDetailsService));
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
+        http.httpBasic()
+                .and().authorizeRequests()
+                .antMatchers(AuthConstants.IGNORE_PATTERN).permitAll()
+                .anyRequest().authenticated()
+                .and().formLogin()
+                        .loginPage(AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE)
+                        .loginProcessingUrl(AuthConstants.DEFAULT_ACCOUNT_LOGIN)
+                        .permitAll()
+                .and().addFilterBefore(dnAccountPwdAuthenticationFilter(
+                        super.authenticationManagerBean()),
+                        BasicAuthenticationFilter.class)
+                .exceptionHandling().authenticationEntryPoint(dnAuthenticationEntryPoint()).and()
+                .csrf().disable();
+        // @formatter:on
+
+    }
+
+}
+
+```
+
+### 4.2 修改配置文件，启动验证
+
+```yaml
+security:
+  started:
+    chapter:
+      create-entry-point
+```
+
+**预期结果**
+> 1 浏览器访问 `http://localhost:8080/user/123` 会重定向到 `http://localhost:8080/account`进行账户密码认证<br>
+2 浏览器访问 `http://localhost:8080/mobile/123` 会重定向到 `http://localhost:8080/mobile`进行手机号验证码认证<br>
+登录信息参见之前
+
+# chapter6 登出的实践
+> [!INFO|style:flat] **细心的小伙伴会发现前文实现的`多身份认证`，登出只有默认的`/logout`的接口生效，并且登出后，会重定向到`/account`登录页面
+这就不太友好了，期望实现的效果：**<br>
+1 `/account/logout` 账户密码登出，退出后跳转到`/account`登录页<br>
+2 `/mobile/logout` 手机验证码登出，退出后跳转到`/mobile`登录页
+
+## 1 调整授权的常量类
+> **`AuthConstants`补充如下常量，并定义一个退出的RequestMatcher，实现请求匹配该RequestMatcher后执行登出逻辑**
+
+```
+String DEFAULT_MOBILE_LOGIN_OUT_PAGE = "/mobile/logout";
+String DEFAULT_ACCOUNT_LOGIN_OUT_PAGE = "/account/logout";
+
+/**
+ * logout RequestMatcher
+ */
+OrRequestMatcher LOGOUT_REQUEST_MATCHER = new OrRequestMatcher(
+        new AntPathRequestMatcher(AuthConstants.DEFAULT_ACCOUNT_LOGIN_OUT_PAGE, HttpMethod.GET.name()),
+        new AntPathRequestMatcher(AuthConstants.DEFAULT_ACCOUNT_LOGIN_OUT_PAGE, HttpMethod.POST.name()),
+        new AntPathRequestMatcher(AuthConstants.DEFAULT_MOBILE_LOGIN_OUT_PAGE, HttpMethod.GET.name()),
+        new AntPathRequestMatcher(AuthConstants.DEFAULT_MOBILE_LOGIN_OUT_PAGE, HttpMethod.POST.name()));
+```
+
+## 2 安全配置调整
+
+> 实现`RequestMatcher`匹配请求，执行logout的Handler处理器，处理成功后的重定向配合自定义的`DnAuthenticationEntryPoint`实现预期的效果
+
+```
+.and().logout().logoutRequestMatcher(AuthConstants.LOGOUT_REQUEST_MATCHER)
+                        .permitAll()
+```
+
+**完整的配置**
+
+```java
+@Configuration
+@EnableWebSecurity
+@ConditionalOnProperty(name = "security.started.chapter", havingValue = "logout-process", matchIfMissing = false)
+public class WebSecurityConfigForLogoutProcess extends WebSecurityConfigurerAdapter {
+
+    private final DnUserDetailServiceImpl userDetailsService;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Autowired
+    public WebSecurityConfigForLogoutProcess(DnUserDetailServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+    
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/css/**", "/js/**", "*.html", "/favicon.ico");
+    }
+
+    private DnMobileAuthenticationFilter dnAccountPwdAuthenticationFilter(AuthenticationManager manager) {
+        DnMobileAuthenticationFilter filter = new DnMobileAuthenticationFilter();
+        filter.setAuthenticationManager(manager);
+        return filter;
+    }
+
+    private DnAuthenticationEntryPoint dnAuthenticationEntryPoint() {
+        DnAuthenticationEntryPoint authEntryPoint =
+                new DnAuthenticationEntryPoint(AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE,AuthConstants.IGNORE_PATTERN);
+        Map<String, String> pointMap = new LinkedHashMap<>();
+        pointMap.put("/mobile/**", AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE);
+        pointMap.put("/user/**", AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE);
+        authEntryPoint.setAuthPointMap(pointMap);
+        return authEntryPoint;
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // 系统提供的
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        auth.authenticationProvider(authenticationProvider);
+        // 自定义
+        auth.authenticationProvider(new DnMobileAuthenticationProvider(userDetailsService));
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
+        http.httpBasic()
+                .and().authorizeRequests()
+                .antMatchers(AuthConstants.IGNORE_PATTERN).permitAll()
+                .anyRequest().authenticated()
+                .and().logout().logoutRequestMatcher(AuthConstants.LOGOUT_REQUEST_MATCHER)
+                        .permitAll()
+                .and().formLogin()
+                        .loginPage(AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE)
+                        .loginProcessingUrl(AuthConstants.DEFAULT_ACCOUNT_LOGIN)
+                        .permitAll()
+                .and().addFilterBefore(dnAccountPwdAuthenticationFilter(
+                        super.authenticationManagerBean()),
+                        BasicAuthenticationFilter.class)
+                .exceptionHandling().authenticationEntryPoint(dnAuthenticationEntryPoint()).and()
+                .csrf().disable();
+        // @formatter:on
+
+    }
+
+}
+
+```
+
+## 3 修改配置文件，启动验证
+
+```yaml
+security:
+  started:
+    chapter:
+      logout-process
+```
+
+**预期结果**
+> 1 账户密码认证成功后，浏览器访问`http://localhost:8080/account/logout`,登出重定向到`http://localhost:8080/account`<br>
+2 手机号验证码认证成功后，浏览器访问`http://localhost:8080/mobile/logout`,登出重定向到`http://localhost:8080/mobile`<br>
+登录信息参见之前
+
+# chapter7 session共享
+> **Spring Security本身依赖于单节点的实现，session存在于内存中，
+当在多个容器环境或多实例运行时，改造为redis统一存储,实现session共享**
+
+## maven依赖
+```xml
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.session</groupId>
+        <artifactId>spring-session-data-redis</artifactId>
+    </dependency>
+    
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+
+    <!-- Lettuce pool 连接池 -->
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-pool2</artifactId>
+    </dependency>
+    
+</dependencies>
+```
+
+## 配置启用
+```java
+
+/**
+ * redis实现session共享
+ */
+@Configuration
+@EnableRedisHttpSession
+public class SessionConfig {
+ 
+}
+
+
+
+@Configuration
+@EnableCaching //缓存启动注解
+public class RedisConfig {
+
+    //redis连接工厂
+    @Resource
+    private LettuceConnectionFactory lettuceConnectionFactory;
+
+    /**
+     * 配置自定义redisTemplate
+     */
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate() {
+
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(lettuceConnectionFactory);
+
+        //使用FastJsonRedisSerializer序列化和反序列化redis的key、value值
+        template.setValueSerializer(fastJsonRedisSerializer());
+        template.setKeySerializer(fastJsonRedisSerializer());
+        template.afterPropertiesSet();
+        return template;
+    }
+
+    /**
+     * fastjson序列化Bean
+     */
+    @Bean
+    public FastJsonRedisSerializer<?> fastJsonRedisSerializer() {
+        return new FastJsonRedisSerializer<>(Object.class);
+    }
+
+}
+
+```
+
+```yaml
+spring:
+    redis:
+        database: 0 #索引
+        host: 127.0.0.1
+        port: 6379
+        password: 123456 #修改成对应自己的redis密码
+        lettuce:
+          pool:
+            max-active: 8 #最大连接数
+            max-idle: 8 #最大空闲连接
+            min-idle: 0 #最小空闲连接
+```
+> 配置即可，因为Spring Security已经自动实现将session存在redis
+  
+  
+## 对应redis的存储
+
+- spring.session.sessions.[SESSION_ID].creationTime
+- spring.session.sessions.[SESSION_ID].sessionAttr:SPRING_SECURITY_CONTEXT
+- spring.session.sessions.[SESSION_ID].maxInactiveInterval
+- spring.session.sessions.[SESSION_ID].lastAccessedTime

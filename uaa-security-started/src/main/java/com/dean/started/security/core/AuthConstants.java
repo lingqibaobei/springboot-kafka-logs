@@ -31,7 +31,6 @@ public interface AuthConstants {
 
 
     String[] IGNORE_PATTERN = new String[]{
-            "**.css", "**.js", "**.html", "favicon.ico",
             "/error",
             AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE,
             AuthConstants.DEFAULT_ACCOUNT_LOGIN,

@@ -1,5 +1,7 @@
 package com.dean.started.security.core;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.util.AntPathMatcher;
@@ -12,8 +14,8 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * @author fuhw
- * @date 2017年11月30日
+ * @author Dean
+ * @date 2021-04-14
  */
 public class DnAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
@@ -27,11 +29,15 @@ public class DnAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint
     /**
      * 配置请求路径返回不同的登录页路径
      */
+    @Setter
+    @Getter
     private Map<String, String> authPointMap = Collections.emptyMap();
 
     /**
      * AntPathRequestMatcher可以实现路径的匹配工作
      */
+    @Setter
+    @Getter
     private PathMatcher pathMatcher = new AntPathMatcher();
 
 
@@ -39,11 +45,11 @@ public class DnAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint
     protected String determineUrlToUseForThisRequest(HttpServletRequest request, HttpServletResponse response,
                                                      AuthenticationException exception) {
         String reqUri = request.getRequestURI().replaceAll(request.getContextPath(), "");
-
+        // as the same to the auth point ignore
         if (this.authPointMap.values().contains(reqUri)) {
             return reqUri;
         }
-
+        // ignore pattern
         if (Objects.nonNull(ignorePattern)) {
             for (String s : ignorePattern) {
                 if (this.pathMatcher.match(s, reqUri)) {
@@ -52,30 +58,14 @@ public class DnAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint
             }
         }
 
-
+        // match auth point
         for (String pattern : this.authPointMap.keySet()) {
             if (this.pathMatcher.match(pattern, reqUri)) {
                 return this.authPointMap.get(pattern);
             }
         }
+        // redirect default loginFormUrl
         return super.determineUrlToUseForThisRequest(request, response, exception);
     }
-
-    public Map<String, String> getAuthPointMap() {
-        return authPointMap;
-    }
-
-    public void setAuthPointMap(Map<String, String> authPointMap) {
-        this.authPointMap = authPointMap;
-    }
-
-    public PathMatcher getPathMatcher() {
-        return pathMatcher;
-    }
-
-    public void setPathMatcher(PathMatcher pathMatcher) {
-        this.pathMatcher = pathMatcher;
-    }
-
 
 }
