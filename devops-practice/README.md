@@ -2,6 +2,7 @@
 # devops
 
 > 基于spring-cloud微服务架构，实践docker compose编排容器，docker容器CICD自动化部署,运维监控等
+## see more details : [博客链接](http://know.himygirl.cn/devops/)
 
 ## 1 环境
 
@@ -65,5 +66,4 @@ Container容器监控 | ||✅|[container-monitor](http://47.103.88.209:3000/d/p6
 
 > docker部署与传统部署的区别
 ![docker部署与传统部署的区别](static/dn-docker-cicd-compare.jpg)
-
 
