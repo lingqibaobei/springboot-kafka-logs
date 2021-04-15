@@ -14,7 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,6 +31,8 @@ import java.util.Map;
 public class WebSecurityConfigForLogoutProcess extends WebSecurityConfigurerAdapter {
 
     private final DnUserDetailServiceImpl userDetailsService;
+    private SimpleUrlLogoutSuccessHandler accountSuccessHandler = new SimpleUrlLogoutSuccessHandler();
+    private SimpleUrlLogoutSuccessHandler mobileSuccessHandler = new SimpleUrlLogoutSuccessHandler();
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -37,6 +41,8 @@ public class WebSecurityConfigForLogoutProcess extends WebSecurityConfigurerAdap
 
     @Autowired
     public WebSecurityConfigForLogoutProcess(DnUserDetailServiceImpl userDetailsService) {
+        accountSuccessHandler.setDefaultTargetUrl(AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE);
+        mobileSuccessHandler.setDefaultTargetUrl(AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE);
         this.userDetailsService = userDetailsService;
     }
 
@@ -55,8 +61,8 @@ public class WebSecurityConfigForLogoutProcess extends WebSecurityConfigurerAdap
         DnAuthenticationEntryPoint authEntryPoint =
                 new DnAuthenticationEntryPoint(AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE,AuthConstants.IGNORE_PATTERN);
         Map<String, String> pointMap = new LinkedHashMap<>();
-        pointMap.put("/mobile/**", AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE);
-        pointMap.put("/user/**", AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE);
+        pointMap.put(AuthConstants.DEFAULT_MOBILE_URL_PATTERN, AuthConstants.DEFAULT_MOBILE_LOGIN_PAGE);
+        pointMap.put(AuthConstants.DEFAULT_ACCOUNT_URL_PATTERN, AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE);
         authEntryPoint.setAuthPointMap(pointMap);
         return authEntryPoint;
     }
@@ -74,12 +80,15 @@ public class WebSecurityConfigForLogoutProcess extends WebSecurityConfigurerAdap
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         // @formatter:off
         http.httpBasic()
                 .and().authorizeRequests()
                 .antMatchers(AuthConstants.IGNORE_PATTERN).permitAll()
                 .anyRequest().authenticated()
                 .and().logout().logoutRequestMatcher(AuthConstants.LOGOUT_REQUEST_MATCHER)
+                        .defaultLogoutSuccessHandlerFor(accountSuccessHandler,new AntPathRequestMatcher(AuthConstants.DEFAULT_ACCOUNT_URL_PATTERN))
+                        .defaultLogoutSuccessHandlerFor(mobileSuccessHandler,new AntPathRequestMatcher(AuthConstants.DEFAULT_MOBILE_URL_PATTERN))
                         .permitAll()
                 .and().formLogin()
                         .loginPage(AuthConstants.DEFAULT_ACCOUNT_LOGIN_PAGE)

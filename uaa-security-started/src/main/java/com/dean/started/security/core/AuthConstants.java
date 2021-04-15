@@ -1,6 +1,7 @@
 package com.dean.started.security.core;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
@@ -14,11 +15,13 @@ public interface AuthConstants {
     String DEFAULT_MOBILE_LOGIN_PAGE = "/mobile";
     String DEFAULT_MOBILE_LOGIN_ERROR_PAGE = "/mobile?error";
     String DEFAULT_MOBILE_LOGIN_OUT_PAGE = "/mobile/logout";
+    String DEFAULT_MOBILE_URL_PATTERN = "/mobile/**";
 
     String DEFAULT_ACCOUNT_LOGIN = "/login";
     String DEFAULT_ACCOUNT_LOGIN_PAGE = "/account";
     String DEFAULT_ACCOUNT_LOGIN_ERROR_PAGE = "/account?error";
     String DEFAULT_ACCOUNT_LOGIN_OUT_PAGE = "/account/logout";
+    String DEFAULT_ACCOUNT_URL_PATTERN = "/account/**";
 
     /**
      * logout RequestMatcher

@@ -488,11 +488,11 @@ security:
 ## 设计规划
 
 > 默认的用户密码验证流程如下:
-![username-password-auth](/asset/img/security/user-pwd-auth.jpg)
+![username-password-auth](/asset/img/uaa/security/user-pwd-auth.jpg)
 
 
 > 参照上述流程，设计手机号验证码的验证流程
-![mobile-captcha-auth](/asset/img/security/mobile-captcha-auth.jpg)
+![mobile-captcha-auth](/asset/img/uaa/security/mobile-captcha-auth.jpg)
 
 ## 创建登录页面
 
@@ -1134,8 +1134,7 @@ security:
 登录信息参见之前
 
 # chapter6 登出的实践
-> [!INFO|style:flat] **细心的小伙伴会发现前文实现的`多身份认证`，登出只有默认的`/logout`的接口生效，并且登出后，会重定向到`/account`登录页面
-这就不太友好了，期望实现的效果：**<br>
+> [!INFO|style:flat] **细心的小伙伴会发现前文实现的`多身份认证`，登出只有默认的`/logout`的接口生效，是否能实现如下的效果呢：**<br>
 1 `/account/logout` 账户密码登出，退出后跳转到`/account`登录页<br>
 2 `/mobile/logout` 手机验证码登出，退出后跳转到`/mobile`登录页
 
@@ -1256,6 +1255,8 @@ security:
 > 1 账户密码认证成功后，浏览器访问`http://localhost:8080/account/logout`,登出重定向到`http://localhost:8080/account`<br>
 2 手机号验证码认证成功后，浏览器访问`http://localhost:8080/mobile/logout`,登出重定向到`http://localhost:8080/mobile`<br>
 登录信息参见之前
+
+![最终效果](/asset/img/uaa/security/uaa-security-process.gif) 
 
 # chapter7 session共享
 > **Spring Security本身依赖于单节点的实现，session存在于内存中，
