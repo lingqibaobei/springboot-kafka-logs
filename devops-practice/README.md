@@ -2,7 +2,7 @@
 # devops
 
 > 基于spring-cloud微服务架构，实践docker compose编排容器，docker容器CICD自动化部署,运维监控等
-## see more details : [博客链接](http://know.himygirl.cn/devops/)
+## see more details : [博客链接](http://know.mobile.himygirl.cn/devops/)
 
 ## 1 环境
 
