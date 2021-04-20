@@ -3,6 +3,7 @@ package com.dean.started.security.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  */
 @Data
 @Entity
-public class SysUser {
+public class SysUser implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
