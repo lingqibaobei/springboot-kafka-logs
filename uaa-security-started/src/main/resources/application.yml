@@ -31,8 +31,8 @@ spring:
 ## 指定Security配置类
 security:
   started:
-    session:
-      share
+#    session:
+#      share
     chapter:
       logout-process
 

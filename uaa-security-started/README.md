@@ -11,3 +11,4 @@
 - [多认证方式登出实践](http://know.mobile.himygirl.cn/uaa/security/9%20spring%20security%20logout.html)
 - [如何实现session共享](http://know.mobile.himygirl.cn/uaa/security/10%20spring%20security%20session%20share.html)
 
+> 注意： `logging.level.org.springframework.security`=DEBUG // 打开日志
