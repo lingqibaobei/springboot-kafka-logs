@@ -1,0 +1,248 @@
+{
+	"info": {
+		"_postman_id": "4cf50f90-957c-4ca8-a0f4-ed9d8738a971",
+		"name": "dean-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "mongo",
+			"item": [
+				{
+					"name": "getUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/user/609bc458f4e5763a07dd9eec",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"609bc458f4e5763a07dd9eec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserByCondition",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/user/condition?size=2&page=0",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"condition"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "mrbird",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "r",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "2"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserByDescription",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/user/description/de",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"description",
+								"de"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserByName",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/user/name/dean",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"name",
+								"dean"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserByAge",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/user/age/20/30",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"age",
+								"20",
+								"30"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsersStream",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/user/stream",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"stream"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/user/609bbc5ff4e57632d1db4bee",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"609bbc5ff4e57632d1db4bee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUser",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"dean\",\n    \"age\":28,\n    \"description\":\"java enginer and designer\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/user/609bc458f4e5763a07dd9eec",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"609bc458f4e5763a07dd9eec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/user",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"dean\",\n    \"age\":28,\n    \"description\":\"java enginer\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/user",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

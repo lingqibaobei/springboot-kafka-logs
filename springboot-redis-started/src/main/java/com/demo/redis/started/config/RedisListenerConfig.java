@@ -11,6 +11,9 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 /**
  * redis的监听器配置
  *
+ * # PSubscribe dean-pub-topic
+ * # Publish dean-pub-topic 'Hello Dean'
+ *
  * @author fuhw/Dean
  * @date 2020-08-05
  */

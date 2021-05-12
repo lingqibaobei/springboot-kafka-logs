@@ -20,6 +20,7 @@
         <module>springboot-kafka</module>
         <module>springboot-redis-started</module>
         <module>springboot-actuator</module>
+        <module>springboot-mongo</module>
         <module>uaa-security-started</module>
     </modules>
 

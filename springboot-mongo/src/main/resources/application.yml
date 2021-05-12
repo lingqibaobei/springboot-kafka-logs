@@ -1,0 +1,12 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: springboot-mongo
+  data:
+    mongodb:
+      host: ${MONGO_HOST:localhost}
+      port: ${MONGO_PROT:27017}
+      database: ${MONGO_DB:dn-test}
+      username: ${MONGO_USERNAME:dean}
+      password: ${MONGO_PWD:dean123}
