@@ -1,4 +1,5 @@
-> [!info] **基于spring-cloud微服务架构,spring oauth2框架，实践分布式uaa统一认证授权中心**<br>
+
+> **基于spring-cloud微服务架构,spring oauth2框架，实践分布式uaa统一认证授权中心**[博客链接](http://know.mobile.himygirl.cn/uaa/oauth2/)<br>
 **参见项目: [devops实践](/devops-practice/README.md)**
 
 
