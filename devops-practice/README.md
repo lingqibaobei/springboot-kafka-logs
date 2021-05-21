@@ -2,7 +2,7 @@
 # devops
 
 > 基于spring-cloud微服务架构，实践docker compose编排容器，docker容器CICD自动化部署,运维监控等
-## see more details : [博客链接](http://know.himygirl.cn/devops/)
+## see more details : [博客链接](http://know.mobile.himygirl.cn/devops/)
 
 ## 1 环境
 
@@ -23,12 +23,12 @@
 :---|:---:|:-----|:----|:---
 `gateway-service` | `9999` | API网关| ✅| [网关API](http://47.103.88.209:9999/swagger-ui.html) 
 `eureka-registry` | `8761`| 注册中心| ✅| [注册中心地址](http://47.103.88.209:8761/)
-`producer-service` | `8881`| 服务提供者| ✅| 经网关调用：[http://47.103.88.209:9999/producer/hello](http://47.103.88.209:9999/producer/hello)<br>
-`consumer-service` | `8882`| 服务消费者| ✅| 经网关调用：[http://47.103.88.209:9999/consumer/hello](http://47.103.88.209:9999/consumer/hello)<br> 调用`producer-service`服务：[http://47.103.88.209:9999/consumer/call](http://47.103.88.209:9999/consumer/call)
+`producer-service` | `8881`| 服务提供者| ✅| 经网关调用：[http://47.103.88.209:9999/producer/sample/hello](http://47.103.88.209:9999/producer/sample/hello)<br>服务地址：[http://47.103.88.209:8881](http://47.103.88.209:8881)
+`consumer-service` | `8882`| 服务消费者| ✅| 经网关调用：[http://47.103.88.209:9999/consumer/sample/hello](http://47.103.88.209:9999/consumer/sample/hello)<br> 调用`producer-service`服务：[http://47.103.88.209:9999/consumer/sample/call](http://47.103.88.209:9999/consumer/sample/call)<br>
 `CI/CD` |`8888` |  | ✅ |  [Jenkins](http://115.159.192.74:8888/)<br>账户密码: user_sample/user_123
-APP应用监控 | | | ✅ |[app-monitor](http://47.103.88.209:3000/d/8Z4_LPsMk/app-monitor?orgId=1&refresh=30s)<br>账户密码: user_sample/user_123
-OS系统监控 | | | ✅ |[sys-monitor](http://47.103.88.209:3000/d/9CWBz0bik/sys-monitor?orgId=1)<br>账户密码: user_sample/user_123
-Container容器监控 | ||✅|[container-monitor](http://47.103.88.209:3000/d/p6JPYPyMz/container-monitor?orgId=1&refresh=5m)<br>账户密码: user_sample/user_123
+APP应用监控 | | | ✅ |[app-monitor](http://47.103.88.209:3000/d/8Z4_LPsMk/app-monitor?orgId=1&refresh=30s)<br>账户密码: user_sample/user_123|
+OS系统监控 | | | ✅ |[sys-monitor](http://47.103.88.209:3000/d/9CWBz0bik/sys-monitor?orgId=1)<br>账户密码: user_sample/user_123|
+Container容器监控 | | |✅|[container-monitor](http://47.103.88.209:3000/d/p6JPYPyMz/container-monitor?orgId=1&refresh=5m)<br>账户密码: user_sample/user_123|
 
 ## 3 详情摘录图
 
