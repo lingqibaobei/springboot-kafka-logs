@@ -15,6 +15,7 @@
 | 项目名称| 描述 | 状态 |
 | -----------------------|------------|----|
 | devops-practice|[自动化运维实践](devops-practice/README.md) | ✅
+| uaa-security-started |[spring security认证授权实践系列](uaa-security-started/README.md) | ✅
 | uaa-practice|[基于oauth2协议统一认证授权实践](uaa-practice/README.md) | ✅
 | logback-to-kafka| [基于logback日志收集到kafka](logback-to-kafka/README.md)  | ✅
 | springboot-kafka| [spring-kafka整合springboot](springboot-kafka/README.md)  | ✅
